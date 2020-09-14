@@ -38,18 +38,25 @@ using namespace __gnu_pbds;
 int main()
 {
   io2;
-  cout << "216" << "\n";
-  ll i,j,k;
-  fr(i, 0, 6, 1)
+  cout << "3125" << "\n";
+  ll i,j,k,p, q;
+  fr(p, 0, 6, 1)
   {
-    fr(j, 0, 6, 1)
+    fr(q, 0, 6, 1)
     {
-      fr(k, 0, 6, 1)
+      fr(i, 0, 6, 1)
       {
-        cout << "3\n";
-        cout << i << " " << j << " " << k << "\n";
+        fr(j, 0, 6, 1)
+        {
+          fr(k, 0, 6, 1)
+          {
+            cout << "5\n";
+            cout << p << " " << q << " " << i << " " << j << " " << k << "\n";
+          }
+        }
       }
     }
   }
+
   return 0;
 }

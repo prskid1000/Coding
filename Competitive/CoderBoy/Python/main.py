@@ -10,17 +10,6 @@ sys.stdin = open('./in.txt', 'r')
 #IO Redirection
 
 #common computation
-is_prime = [1] * 900001
-is_prime[0] = 0
-is_prime[1] = 0
-for i in range(2, 900001):
-    if(is_prime[i] == 1):
-        for j in range(i + i, 900001, i):
-            is_prime[j] = 0
-prime = []
-for i in range(2, 900001):
-    if(is_prime[i] == 1):
-        prime.append(i)
 #common computation
 
 def factors(n):

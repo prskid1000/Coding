@@ -65,12 +65,12 @@ struct MT
   }
   ll inverse_mod_q(ll n, ll q = R)
   {
-    return power_mod_q(n, q-2, q);
+    return power_mod_q(n, q - 2, q);
   }
 
   ll nCr_mod_q(ll n, ll r, ll q = R)
   {
-    return (((fact[n] * inverse_mod_q(fact[r], q)) % q) * inverse_mod_q(fact[n-r], q)) % q;
+    return (((fact[n] * inverse_mod_q(fact[r], q)) % q) * inverse_mod_q(fact[n - r], q)) % q;
   }
   ll power(ll x, ll n)
   {
@@ -163,11 +163,6 @@ struct DSU
   }
 };
 
-struct RBK
-{
-  // rabin-karp algorithm
-};
-
 struct KMP
 {
   vector<ll> lps;
@@ -180,7 +175,7 @@ struct KMP
     while(i < (ll)p.size())
     {
       if(p[i] == p[len]) lps[i++] = ++len;
-      else if(len) len = lps[len-1];
+      else if(len) len = lps[len - 1];
       else lps[i++] = 0;
     }
     //STRING MATCHING
@@ -191,11 +186,11 @@ struct KMP
       if(j == (ll)p.size())
       {
         //It's a match at index i - 1
-        j = lps[j-1];
+        j = lps[j - 1];
       }
       else if(i < (ll)t.size() && p[j] != t[i])
       {
-        if(j) j = lps[j-1];
+        if(j) j = lps[j - 1];
         else i++;
       }
     }
@@ -205,7 +200,7 @@ struct KMP
 struct MCH
 {
   ll P[1000000] = {0};
-  vector<char> convert(vector<char> &s)
+  vector<char> convert(vector<char>& s)
   {
       vector<char> v;
       v.push_back('@');
@@ -218,7 +213,7 @@ struct MCH
       v.push_back('$');
       return v;
   }
-  vector<char> manachar(vector<char> &s)
+  vector<char> manachar(vector<char>& s)
   {
     vector<char> Q(convert(s));
     ll c = 0, r = 0;
@@ -267,7 +262,7 @@ struct BST
     ll key = 0;
     node *left = NULL, *right = NULL;
   };
-  node* insert(node *root, ll key)
+  node* insert(node* root, ll key)
   {
     if(root == NULL)
     {
@@ -275,14 +270,14 @@ struct BST
       root->key = key;
       return root;
     }
-    if(key < root->key)root->left = insert(root->left, key);
+    if(key < root->key) root->left = insert(root->left, key);
     else root->right = insert(root->right, key);
     return root;
   }
-  node* search(node *root, ll key)
+  node* search(node* root, ll key)
   {
-    if(root == NULL || root->key == key)return root;
-    if (root->key < key)return search(root->right, key);
+    if(root == NULL || root->key == key) return root;
+    if (root->key < key) return search(root->right, key);
     return search(root->left, key);
   }
   node* minNode(node* root)
@@ -292,7 +287,7 @@ struct BST
       current = current->left;
       return current;
   }
-  node* remove(node *root, ll key)
+  node* remove(node* root, ll key)
   {
     if (root == NULL) return root;
     if (key < root->key) root->left = remove(root->left, key);
@@ -327,7 +322,7 @@ struct TRI
   struct node
   {
     node *child[26] = {NULL};
-    bool *childf[26] ={0};
+    bool *childf[26] = {0};
     bool isEnd = false;
   };
   bool search(node *root, string s)
@@ -372,7 +367,7 @@ struct TRI
         ptr = ptr->child[idx];
       }
       ptr->isEnd = false;
-      for(ll i = 0; i < future.size(); i++)delete(future[i]);
+      for(ll i = 0; i < future.size(); i++) delete(future[i]);
     }
   }
 };
@@ -467,7 +462,7 @@ struct STR
     ll right = query(tree, 2 * idx + 1, mid + 1, e, l, r);
     return (left + right);
   }
-  void pointUpdate(vector<ll> &tree, ll idx, ll s, ll e, ll i, ll val)
+  void pointUpdate(vector<ll> & tree, ll idx, ll s, ll e, ll i, ll val)
   {
     if(i < s || i > e)return;
     if(s == e)
@@ -480,7 +475,7 @@ struct STR
     pointUpdate(tree, 2 * idx + 1, mid + 1, e, i, val);
     tree[idx] = tree[2 * idx] + tree[2 * idx + 1];
   }
-  void rangeUpdate(vector<ll>&tree, ll idx, ll s, ll e, ll l, ll r, ll chg)
+  void rangeUpdate(vector<ll>& tree, ll idx, ll s, ll e, ll l, ll r, ll chg)
   {
     if(l > e || r < s)return;
     if(s == e)
@@ -498,14 +493,14 @@ struct STR
 
 struct STG
 {
-  void mask_gen(vector<vector<ll>>&mask, vector<ll>pat, ll i)
+  void mask_gen(vector<vector<ll>>& mask, vector<ll>pat, ll i)
   {
     if(i == pat.size()) return;
     mask.push_back(pat);
-    mask_gen(mask, pat ,i + 1);
+    mask_gen(mask, pat, i + 1);
     pat[i] = 1;
     mask.push_back(pat);
-    mask_gen(mask, pat ,i + 1);
+    mask_gen(mask, pat, i + 1);
   }
   vector<vector<ll>> com_gen(vector<ll> v)
   {
@@ -521,7 +516,8 @@ struct STG
           if (bitmask[i]) tmp.push_back(v[i]);
       }
       res.push_back(tmp);
-    } while(prev_permutation(bitmask.begin(), bitmask.end()));
+    }
+    while(prev_permutation(bitmask.begin(), bitmask.end()));
     return res;
   }
   vector<vector<ll>> perm_gen(vector<ll> v)
@@ -690,9 +686,9 @@ struct KRK
     vector<edge> edges;
     vector<pair<ll, ll>> res;
     DSU dsu(n);
-    for(ll i = 0;i < v.size(); i++)
+    for(ll i = 0; i < v.size(); i++)
     {
-      for(ll j = 0;j < v[i].size(); j++)
+      for(ll j = 0; j < v[i].size(); j++)
       {
         edge e;
         e.u = i;
@@ -717,50 +713,46 @@ struct KRK
 
 struct ART
 {
-  vector<ll> points;
   vector<vector<ll>> adj;
   vector<bool> visited;
   vector<ll> tin, low;
+  vector<ll> cut;
   ll timer;
 
-  void dfs(ll v, ll p = -1)
-  {
-    visited[v] = true;
-    tin[v] = low[v] = timer++;
-    ll children=0;
-    for(ll to : adj[v])
-    {
-        if (to == p) continue;
-        if (visited[to])
-        {
-          low[v] = min(low[v], tin[to]);
-        }
-        else
-        {
-          dfs(to, v);
-          low[v] = min(low[v], low[to]);
-          if (low[to] >= tin[v] && p!=-1)
-              points.push_back(v);
-          ++children;
-        }
-    }
-    if(p == -1 && children > 1)
-        points.push_back(v);
-  }
-
-  vector<ll> cut_points(vector<vector<ll>> v)
-  {
-    timer = 0;
-    adj.assign(v.begin(), v.end());
-    visited.assign(adj.size(), false);
-    tin.assign(adj.size(), -1);
-    low.assign(adj.size(), -1);
-    points.clear();
-    for(ll i = 0; i < adj.size(); ++i)
-     {
-        if (!visited[i]) dfs (i);
+  void dfs(ll v, int p = -1)
+   {
+     visited[v] = true;
+     tin[v] = low[v] = timer++;
+     ll children = 0;
+     for (ll to : adj[v]) {
+         if (to == p) continue;
+         if (visited[to]) {
+             low[v] = min(low[v], tin[to]);
+         } else {
+             dfs(to, v);
+             low[v] = min(low[v], low[to]);
+             if (low[to] >= tin[v] && p != -1)
+                 cut.push_back(v);
+             ++children;
+         }
      }
-    return points;
+     if(p == -1 && children > 1)
+         cut.push_back(v);
+   }
+
+  vector<ll> find_cut(vector<vector<ll>> v)
+  {
+    adj.assign(v.begin(), v.end());
+    visited.assign(v.size(), false);
+    timer = 0;
+    tin.assign(v.size(), -1);
+    low.assign(v.size(), -1);
+    cut.clear();
+    for (ll i = 0; i < v.size(); ++i)
+    {
+      if(!visited[i]) dfs(i);
+    }
+    return cut;
   }
 };
 
@@ -809,7 +801,7 @@ struct BPT
     else
     {
       if (rank[a] < rank[b]) swap (a, b);
-      parent[b] = make_pair(a, x^y^1);
+      parent[b] = make_pair(a, x ^ y ^ 1);
       bipartite[a] = bipartite[a] & bipartite[b];
       if (rank[a] == rank[b]) ++rank[a];
     }
@@ -824,52 +816,59 @@ struct SCC
 {
   struct tarjan
   {
-    ll n,m,time = 1;
-    vector<vector<ll>> adj,scc;
-    vector<ll> disc,low;
-    vector<bool> onstack;
-    void dfs(ll u)
+    vector<vector<ll>> adj;
+    void util(ll u, vector<ll> disc, vector<ll> low, stack<ll> *st, vector<ll> stackMember, vector<vector<ll>> &res)
     {
-      static stack<ll> st;
-      disc[u] = low[u] = time++;
-      st.push(u);
-      onstack[u] = true;
-      for(auto i:graph[u])
+      static ll time = 0;
+      disc[u] = low[u] = ++time;
+      st->push(u);
+      stackMember[u] = true;
+      for (auto v:adj[u])
       {
-        if(disc[i] == -1)
+        if (disc[v] == -1)
         {
-          tarjan(i);
-          low[u] = min(low[u],low[i]);
+          util(v, disc, low, st, stackMember, res);
+          low[u]  = min(low[u], low[v]);
         }
-        else if(onstack[i])
-        low[u] = min(low[u],disc[i]);
+        else if (stackMember[v] == true)
+            low[u]  = min(low[u], disc[v]);
       }
-      if(disc[u] == low[u])
+      ll w = 0;
+      if (low[u] == disc[u])
       {
-        vector<ll> scctem;
-        while(1)
+        vector<ll> tmp;
+        while (st->top() != u)
         {
-          ll v = st.top();
-          st.pop();onstack[v] = false;
-          scctem.pb(v);
-          if(u == v) break;
+          w = (ll) st->top();
+          tmp.push_back(w);
+          stackMember[w] = false;
+          st->pop();
         }
-        scc.pb(scctem);
+        w = (ll) st->top();
+        tmp.push_back(w);
+        res.push_back(tmp);
+        stackMember[w] = false;
+        st->pop();
       }
     }
-    void tarjan(vector<vector<ll>> v)
+    vector<vector<ll>> tarjan_ssc(vector<vector<ll>> v)
     {
-      adj.clear();
-      disc.clear();
-      low.clear();
-      onstack.assign(2 * n, 0);
+      vector<ll> disc(v.size());
+      vector<ll> low(v.size());
+      vector<ll> stackMember (v.size());
+      stack<ll> *st = new stack<ll>();
+      vector<vector<ll>> res;
       adj.assign(v.begin(), v.end());
-      disc.assign(n + 1, -1);
-      low.assign(n + 1);
-      for(ll i = 0; i < n; i++)
+      for(ll i = 0; i < v.size(); i++)
       {
-        if(disc[i+1]==-1) tarjan(i+1);
+        disc[i] = INF;
+        low[i] = INF;
+        stackMember[i] = false;
       }
+      for(ll i = 0; i < v.size(); i++)
+      if (disc[i] == INF)
+      util(i, disc, low, st, stackMember, res);
+      return res;
     }
   };
   struct kosaraju
@@ -877,45 +876,47 @@ struct SCC
     vector<vector<ll>> g, gr;
     vector<bool> used;
     vector<ll> order, component;
-    void dfs1(ll v)
+    void dfs1 (ll v)
     {
-     used[v] = true;
-     for (size_t i=0; i<g[v].size(); ++i)
-     if (!used[ g[v][i] ]) dfs1(g[v][i]);
-     order.push_back (v);
+      used[v] = true;
+      for(ll i = 0; i < g[v].size(); ++i)
+      if(!used[ g[v][i] ]) dfs1(g[v][i]);
+      order.push_back (v);
     }
     void dfs2 (int v)
     {
       used[v] = true;
       component.push_back (v);
-      for (size_t i=0; i<gr[v].size(); ++i)
-      if (!used[ gr[v][i] ]) dfs2(gr[v][i]);
+      for (ll i=0; i < gr[v].size(); ++i)
+      if(!used[gr[v][i]]) dfs2(gr[v][i]);
     }
-    vector<vector<ll>> kosaraju(vector<vector<ll>> v)
+    vector<vector<ll>> kosar(vector<vector<ll>> adj)
     {
-      vector<vector<ll>>res;
-      for(ll i = 0; i < v.size(); i++)
+      vector<vector<ll>> res;
+      g.assign(adj.begin(), adj.end());
+      gr.resize(adj.size());
+      for(ll i = 0; i < adj.size(); i++)
       {
-        for(ll j = 0; j < v[i].size(); j++)
+        for(ll j = 0; j < adj[i].size(); j++)
         {
-          g[i].push_back(v[i][j]);
-          gr[v[i][j]].push_back(i);
+          gr[g[i][j]].push_back(i);
         }
       }
-      used.assign (n, false);
-      for (ll i = 0; i < v.size(); ++i)
-          if(!used[i]) dfs1(i);
-      used.assign (v.size(), false);
-      for (ll i = 0; i < v.size(); ++i)
+      used.assign (adj.size(), false);
+      for (ll i = 0; i < adj.size(); ++i)
+      if (!used[i]) dfs1(i);
+      used.assign(adj.size(), false);
+      for (ll i = 0; i < adj.size(); ++i)
       {
-        ll v = order[v.size() - 1 - i];
-        if(!used[v])
+        ll v = order[adj.size() - 1 - i];
+        if (!used[v])
         {
           dfs2(v);
           res.push_back(component);
           component.clear();
         }
       }
+      return res;
     }
   };
 };
@@ -925,20 +926,183 @@ struct LCA
   //binary lifting
   struct BL
   {
+    ll n, l, timer;
+    vector<vector<ll>> adj;
+    vector<ll> tin, tout;
+    vector<vector<ll>> up;
 
+    vector<vector<ll>> blca(vector<vector<ll>> v, ll r)
+    {
+      vector<vector<ll>> res(v);
+      adj.assign(v.begin(), v.end());
+      n = v.size();
+      preprocess(r);
+      for(ll i = 0; i < v.size(); i++)
+      {
+        for(ll j = 0; j < v[i].size(); j++)
+        {
+          res[i][v[i][j]] = lca(i, v[i][j]);
+        }
+      }
+      return res;
+    }
+
+    void dfs(ll v, ll p)
+    {
+      tin[v] = ++timer;
+      up[v][0] = p;
+      for(ll i = 1; i <= l; ++i)
+      up[v][i] = up[up[v][i-1]][i-1];
+      for(ll u : adj[v])
+      {
+        if(u != p) dfs(u, v);
+      }
+      tout[v] = ++timer;
+    }
+    bool is_ancestor(ll u, ll v)
+    {
+      return tin[u] <= tin[v] && tout[u] >= tout[v];
+    }
+
+    ll lca(ll u, ll v)
+    {
+      if(is_ancestor(u, v)) return u;
+      if(is_ancestor(v, u)) return v;
+      for (ll i = l; i >= 0; --i)
+      {
+        if (!is_ancestor(up[u][i], v)) u = up[u][i];
+      }
+      return up[u][0];
+    }
+    void preprocess(ll root)
+    {
+      tin.resize(n);
+      tout.resize(n);
+      timer = 0;
+      l = ceil(log2(n));
+      up.assign(n, vector<ll>(l + 1));
+      dfs(root, root);
+    }
   };
 
   //DSU
   struct DS
   {
-
+    vector<vector<ll>> adj;
+    vector<vector<ll>> queries;
+    vector<vector<ll>> res;
+    vector<ll> ancestor;
+    vector<bool> visited;
+    DSU dsu = DSU(1000000);
+    void dfs(ll v)
+    {
+      visited[v] = true;
+      ancestor[v] = v;
+      for (ll u : adj[v])
+      {
+        if (!visited[u])
+        {
+          dfs(u);
+          dsu.union_set(v, u);
+          ancestor[dsu.find_set(v)] = v;
+        }
+      }
+      for (ll other_node : queries[v])
+      {
+        if(visited[other_node])
+        res[v][other_node] = ancestor[dsu.find_set(other_node)];
+      }
+    }
+    vector<vector<ll>> lca(vector<vector<ll>>v ,vector<vector<ll>>q)
+    {
+      adj.assign(v.begin(), v.end());
+      queries.assign(q.begin(), q.end());
+      ancestor.resize(v.size());
+      visited.assign(v.size(), false);
+      res.clear();
+      dfs(0);
+      return res;
+    }
   };
-
   //euler tour
   struct ET
   {
+    vector<ll> height, euler, first, segtree;
+    vector<bool> visited;
+    ll n;
 
+    ET(vector<vector<ll>> &adj, ll root = 0)
+    {
+      n = adj.size();
+      height.resize(n);
+      first.resize(n);
+      euler.reserve(n * 2);
+      visited.assign(n, false);
+      dfs(adj, root);
+      ll m = euler.size();
+      segtree.resize(m * 4);
+      build(1, 0, m - 1);
+    }
+
+    void dfs(vector<vector<ll>> &adj, ll node, ll h = 0)
+    {
+        visited[node] = true;
+        height[node] = h;
+        first[node] = euler.size();
+        euler.push_back(node);
+        for (auto to : adj[node])
+        {
+          if (!visited[to])
+          {
+            dfs(adj, to, h + 1);
+            euler.push_back(node);
+          }
+        }
+    }
+    void build(ll node, ll b, ll e)
+    {
+      if (b == e)
+      {
+        segtree[node] = euler[b];
+      }
+      else
+      {
+        ll mid = (b + e) / 2;
+        build(node << 1, b, mid);
+        build(node << 1 | 1, mid + 1, e);
+        ll l = segtree[node << 1], r = segtree[node << 1 | 1];
+        segtree[node] = (height[l] < height[r]) ? l : r;
+      }
+    }
+
+   ll query(ll node, ll b, ll e, ll L, ll R)
+   {
+     if (b > R || e < L) return -1;
+     if (b >= L && e <= R) return segtree[node];
+     ll mid = (b + e) >> 1;
+     ll left = query(node << 1, b, mid, L, R);
+     ll right = query(node << 1 | 1, mid + 1, e, L, R);
+     if (left == -1) return right;
+     if (right == -1) return left;
+     return height[left] < height[right] ? left : right;
+   }
+   ll lca(ll u, ll v)
+   {
+     ll left = first[u], right = first[v];
+     if (left > right) swap(left, right);
+     return query(1, 0, euler.size() - 1, left, right);
+   }
   };
+};
+
+struct STD
+{
+  //square-root decompositon
+};
+
+struct SPM
+{
+  //sparse matrix
 };
 
 struct EUT
@@ -956,65 +1120,109 @@ struct MO
   // mo's algorithm
 };
 
-struct SPT
-{
-  //sparse table
-};
-
-struct LHD
-{
-  //ight heavy decomposition
-};
-
-struct SRT
-{
-  //squart roor decomposition
-};
-
-struct MNF
-{
-  // min max flow
-};
-
 struct CVH
 {
-  //convex hull
+  //hull finding algorithm
 };
 
 struct PTF
 {
-  // path finding kruksal tarjan prime
+  struct DJK
+  {
+    vector<vector<pair<ll, ll>>> adj;
+    void dijkstra(ll s, vector<ll>& d, vector<ll>& p)
+    {
+      ll n = adj.size();
+      d.assign(n, INF);
+      p.assign(n, -1);
+      vector<bool> u(n, false);
+      d[s] = 0;
+      for (ll i = 0; i < n; i++)
+      {
+        ll v = -1;
+        for (ll j = 0; j < n; j++)
+        {
+          if (!u[j] && (v == -1 || d[j] < d[v])) v = j;
+        }
+        if (d[v] == INF) break;
+        u[v] = true;
+        for (auto edge : adj[v])
+        {
+          ll to = edge.first;
+          ll len = edge.second;
+          if (d[v] + len < d[to])
+          {
+              d[to] = d[v] + len;
+              p[to] = v;
+          }
+        }
+      }
+    }
+    vector<ll> restore_path(ll s, ll t, vector<ll> const& p)
+    {
+      vector<ll> path;
+      for (ll v = t; v != s; v = p[v])
+      path.push_back(v);
+      path.push_back(s);
+      reverse(path.begin(), path.end());
+      return path;
+    }
+  };
+
+  struct BMF
+  {
+    //bellman-ford
+  };
+
+  struct FDW
+  {
+    vector<vector<ll>> floydWarshall(vector<vector<ll>> v)
+    {
+      vector<vector<ll>>  dist(v);
+      ll i, j, k;
+      for (k = 0; k < v.size(); k++)
+      {
+        for (i = 0; i < v.size(); i++)
+        {
+          for (j = 0; j < v.size(); j++)
+          {
+            if (dist[i][k] + dist[k][j] < dist[i][j])
+            dist[i][j] = dist[i][k] + dist[k][j];
+          }
+        }
+      }
+      return dist;
+    }
+  };
 };
 
-struct GPH
+struct MTM
 {
-  // shortest path cycle detection bipartite matching
+  //meet-in-the-middle
 };
 
 struct IGQ
 {
-  string query_sim(string q)
+  ll query_sim(string q)
   {
-    string ans = "";
+    ll ans = 0;
+    stringstream s(q);
     return ans;
   }
-  string query(ll x)
+  ll query(ll x, ll y)
   {
-    string q = to_string(x) + "\n";
-    string res;
+    string q = to_string(x) + " " + to_string(y) + "\n";
+    ll res;
     cout << q;
     fflush(stdout);
-    cin >> res;
-    //res = query_sim(x ,y);
+    //cin >> res;
+    res = query_sim(q);
     return res;
   }
 };
 
 struct BTS
 {
-  // meet in the middle
-
-
   void rangeTS(ll l, ll u, ll &ans , ll k = -1)
   {
     if (u < l) return;
@@ -1079,13 +1287,6 @@ struct PSA
   }
 };
 
-struct STK
-{
-  //greater smaller element of stack
-};
-
-
-
 struct DP
 {
   ll digitDp(unordered_map<string, ll>memo, string m, vector<ll>lim, ll k)
@@ -1140,7 +1341,10 @@ int main()
    time1
    io1 io2
    #endif
-	 //fast
+   #ifdef ONLINE_JUDGE
+   fast
+   #endif
+
    ll t = 1, i = 0, j = 0, k = 0;
    //init();
    cin >> t;
@@ -1150,45 +1354,12 @@ int main()
 
    while( t-- )
     {
-      ll n = 0, count = 0;
-      cin >> n;
-      ll s = (n * (n + 1)) / 2;
-      fr(i, 1, n + 1, 1)
-      {
-        ll l = (i * (i + 1)) / 2;
-        ll r = s - l;
-        if(l == r)
-        {
-          ll x = i;
-          ll y = n - i;
-          count = count  + (x * (x - 1)) / 2 + (y * ( y- 1)) / 2;
-          //cout << (x * (x - 1)) / 2 << " " << (y * ( y- 1)) / 2 << " " << x << " " << y << "\n";
-        }
-        if((r - l) % 2 == 0)
-        {
-          count ++;
-        }
-        /*fr(j, 1, i + 1, 1)
-        {
-          if((r - l) % 2 == 0)
-          {
-            k = (r - l) / 2 + j;
-            if(k > i && k <=n)
-            {
-              count ++;
-              //cout << l << " " << r << " " << j << " " << k << "\n";
-            }
-          }
-        }*/
-      }
 
-      cout << count << "\n";
-      //cout <<  "\n-------------\n";
     }
 
    #ifndef ONLINE_JUDGE
    time2
-   #endif%s
+   #endif
    //fflush(stdout);
   return 0;
 }
