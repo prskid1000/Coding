@@ -118,7 +118,6 @@ struct MT
   {
     ll p = a.size(), q = a[0].size();
     vector<vector<ll>> c(p, vector<ll>(q));
-
     for(ll i = 0; i < p; i++)
     {
       for(ll j = 0; j < q; j++)
@@ -131,7 +130,6 @@ struct MT
   vector<vector<ll>> power(vector<vector<ll>>& a, ll n)
   {
     vector<vector<ll>> c(a.size(), vector<ll>(a.size(), 0));
-
     if(n == 0)
     {
       for(ll i = 0; i < (ll)a.size(); i++)
@@ -163,6 +161,13 @@ struct MT
       return ans[0][0];
     }
   }
+  //Euclidian
+  //Diphantine
+  //Euler Totient
+  //Fermet Little
+  //Wilson's
+  //Z-functions
+  //Karatsuba
 };
 
 struct DSU
@@ -797,18 +802,18 @@ struct BDG
         last_visit[a] = lca_iteration;
         a = par[a];
       }
-        if(b != -1)
+      if(b != -1)
+      {
+        b = find_2ecc(b);
+        path_b.push_back(b);
+        if(last_visit[b] == lca_iteration)
         {
-          b = find_2ecc(b);
-          path_b.push_back(b);
-          if(last_visit[b] == lca_iteration)
-          {
-            lca = b;
-            break;
-          }
-          last_visit[b] = lca_iteration;
-          b = par[b];
+          lca = b;
+          break;
         }
+        last_visit[b] = lca_iteration;
+        b = par[b];
+      }
     }
     for(ll v : path_a)
     {
@@ -1169,7 +1174,6 @@ struct LCA
       }
       return res;
     }
-
     void dfs(ll v, ll p)
     {
       tin[v] = ++timer;
@@ -1230,7 +1234,6 @@ struct LCA
     vector<ll> ancestor;
     vector<bool> visited;
     DSU dsu = DSU(1000000);
-
     void dfs(ll v)
     {
       visited[v] = true;
@@ -1932,6 +1935,521 @@ struct PSA
   }
 };
 
+struct CVH
+{
+  //Convex-Hull
+  struct MTC
+  {
+    //Monotone-chain
+    struct Point
+    {
+      ll x, y;
+      bool operator<(Point p)
+      {
+        return x < p.x || (x == p.x && y < p.y);
+      }
+    };
+    ll cross_product(Point O, Point A, Point B)
+    {
+      return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
+    }
+    vector<pair<ll,ll>> convex_hull(vector<pair<ll,ll>> pr)
+    {
+      ll n = pr.size(), k = 0;
+      vector<Point> A;
+      vector<pair<ll, ll>> res;
+      for(ll i = 0; i < pr.size(); i++)
+      {
+        Point p;
+        p.x = pr[i].first;
+        p.y = pr[i].second;
+        A.push_back(p);
+      }
+      if (n <= 3)
+      {
+        return res;
+      }
+      vector<Point> ans(2 * n);
+      sort(A.begin(), A.end());
+      for (ll i = 0; i < n; ++i)
+      {
+        while(k >= 2 && cross_product(ans[k - 2], ans[k - 1], A[i]) <= 0)
+        {
+          k--;
+        }
+        ans[k++] = A[i];
+      }
+      for(ll i = n - 1, t = k + 1; i > 0; --i)
+      {
+        while (k >= t && cross_product(ans[k - 2], ans[k - 1], A[i - 1]) <= 0)
+        {
+          k--;
+        }
+        ans[k++] = A[i - 1];
+      }
+      ans.resize(k - 1);
+      for (ll i = 0; i < ans.size(); i++)
+      {
+        res.push_back({ans[i].x, ans[i].y});
+      }
+      return res;
+    }
+  };
+
+  struct GSN
+  {
+    //Graham-Scan
+    struct pt
+    {
+      ld x, y;
+    };
+    static bool cmp(pt a, pt b)
+    {
+      return a.x < b.x || (a.x == b.x && a.y < b.y);
+    }
+    bool cw(pt a, pt b, pt c)
+    {
+      return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) < 0;
+    }
+    bool ccw(pt a, pt b, pt c)
+    {
+      return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) > 0;
+    }
+    void convex_hull(vector<pair<ll, ll>> pr)
+    {
+      vector<pt> a;
+      for(ll i = 0; i < pr.size(); i++)
+      {
+        pt p;
+        p.x = pr[i].first;
+        p.y = pr[i].second;
+        a.push_back(p);
+      }
+      if(a.size() == 1)
+      {
+        return;
+      }
+      sort(a.begin(), a.end(), cmp);
+      pt p1 = a[0], p2 = a.back();
+      vector<pt> up, down;
+      up.push_back(p1);
+      down.push_back(p1);
+      for (ll i = 1; i < (ll)a.size(); i++)
+      {
+        if (i == a.size() - 1 || cw(p1, a[i], p2))
+        {
+          while (up.size() >= 2 && !cw(up[up.size()-2], up[up.size()-1], a[i]))
+          {
+            up.pop_back();
+          }
+          up.push_back(a[i]);
+        }
+        if (i == a.size() - 1 || ccw(p1, a[i], p2))
+         {
+           while(down.size() >= 2 && !ccw(down[down.size()-2], down[down.size()-1], a[i]))
+           {
+             down.pop_back();
+           }
+           down.push_back(a[i]);
+        }
+      }
+      a.clear();
+      for (ll i = 0; i < (ll)up.size(); i++)
+      {
+        a.push_back(up[i]);
+      }
+      for (ll i = down.size() - 2; i > 0; i--)
+      {
+        a.push_back(down[i]);
+      }
+    }
+  };
+
+  struct GWP
+  {
+    //Gift-Wrapping or Jarvis
+    struct Point
+    {
+      ll x, y;
+    };
+    ll orientation(Point p, Point q, Point r)
+    {
+        ll val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+        if (val == 0)
+        {
+          return 0;
+        }
+        return (val > 0)? 1: 2;
+    }
+    vector<pair<ll, ll>> convexHull(vector<pair<ll, ll>>v)
+    {
+      vector<Point> points;
+      vector<pair<ll, ll>> res;
+      ll n = v.size(), l = 0;
+      vector<Point> hull;
+      for(ll i = 0; i < v.size(); i++)
+      {
+        Point pt;
+        pt.x = v[i].first;
+        pt.y = v[i].second;
+        points.push_back(pt);
+      }
+      if (n < 3)
+      {
+        return res;
+      }
+      for(ll i = 1; i < n; i++)
+      {
+        if (points[i].x < points[l].x)
+        {
+          l = i;
+        }
+      }
+      ll p = l, q;
+      do
+      {
+        hull.push_back(points[p]);
+        q = (p + 1) % n;
+        for (ll i = 0; i < n; i++)
+        {
+          if(orientation(points[p], points[i], points[q]) == 2)
+          {
+             q = i;
+          }
+        }
+        p = q;
+      } while (p != l);
+      for (ll i = 0; i < hull.size(); i++)
+      {
+        res.push_back({hull[i].x, hull[i].y});
+      }
+      return res;
+    }
+  };
+};
+
+struct FLW
+{
+  struct EKP
+  {
+    //Edmonds-Karp, a BFS implementation of Ford-Fulkerson
+    bool bfs(vector<vector<ll>> rGraph, ll s, ll t, vector<ll> parent)
+    {
+      vector<bool> visited(parent.size(), false);
+      queue <ll> q;
+      q.push(s);
+      visited[s] = true;
+      parent[s] = -1;
+      while (!q.empty())
+      {
+        ll u = q.front();
+        q.pop();
+        for (ll v = 0; v < parent.size(); v++)
+        {
+          if (visited[v]==false && rGraph[u][v] > 0)
+          {
+            q.push(v);
+            parent[v] = u;
+            visited[v] = true;
+          }
+        }
+      }
+      return (visited[t] == true);
+    }
+    ll fordFulkerson(vector<vector<ll>> Graph, ll s, ll t)
+    {
+      ll u, v, max_flow = 0;
+      vector<vector<ll>> rGraph(Graph);
+      vector<ll> parent(Graph.size());
+      while (bfs(rGraph, s, t, parent))
+      {
+        ll path_flow = INF;
+        for(v = t; v != s; v = parent[v])
+        {
+          u = parent[v];
+          path_flow = min(path_flow, rGraph[u][v]);
+        }
+        for(v = t; v != s; v = parent[v])
+        {
+          u = parent[v];
+          rGraph[u][v] -= path_flow;
+          rGraph[v][u] += path_flow;
+        }
+        max_flow += path_flow;
+      }
+      return max_flow;
+    }
+  };
+
+  struct DNC
+  {
+    //Dinic's
+    struct FlowEdge
+    {
+      ll v, u, cap, flow = 0;
+      FlowEdge(ll v, ll u, ll cap) : v(v), u(u), cap(cap) {}
+    };
+    const ll flow_inf = 1e18;
+    vector<FlowEdge> edges;
+    vector<vector<ll>> adj;
+    ll n, m = 0, s, t;
+    vector<ll> level, ptr;
+    queue<ll> q;
+    DNC(ll n, ll s, ll t) : n(n), s(s), t(t)
+    {
+      adj.resize(n);
+      level.resize(n);
+      ptr.resize(n);
+    }
+    void add_edge(ll v, ll u, ll cap)
+    {
+      edges.emplace_back(v, u, cap);
+      edges.emplace_back(u, v, 0);
+      adj[v].push_back(m);
+      adj[u].push_back(m + 1);
+      m += 2;
+    }
+    bool bfs()
+    {
+      while(!q.empty())
+      {
+        ll v = q.front();
+        q.pop();
+        for(ll id : adj[v])
+        {
+          if(edges[id].cap - edges[id].flow < 1)
+          {
+            continue;
+          }
+          if(level[edges[id].u] != -1)
+          {
+            continue;
+          }
+          level[edges[id].u] = level[v] + 1;
+          q.push(edges[id].u);
+        }
+      }
+      return level[t] != -1;
+    }
+    ll dfs(ll v, ll pushed)
+    {
+      if(pushed == 0)
+      {
+        return 0;
+      }
+      if(v == t)
+      {
+        return pushed;
+      }
+      for(ll& cid = ptr[v]; cid < (ll)adj[v].size(); cid++)
+      {
+        ll id = adj[v][cid], u = edges[id].u;
+        if (level[v] + 1 != level[u] || edges[id].cap - edges[id].flow < 1)
+        {
+          continue;
+        }
+        ll tr = dfs(u, min(pushed, edges[id].cap - edges[id].flow));
+        if (tr == 0)
+        {
+          continue;
+        }
+        edges[id].flow += tr;
+        edges[id ^ 1].flow -= tr;
+        return tr;
+      }
+      return 0;
+    }
+    ll flow()
+    {
+      ll f = 0;
+      while (true)
+      {
+        fill(level.begin(), level.end(), -1);
+        level[s] = 0;
+        q.push(s);
+        if (!bfs())
+        {
+          break;
+        }
+        fill(ptr.begin(), ptr.end(), 0);
+        while (long long pushed = dfs(s, flow_inf))
+        {
+          f += pushed;
+        }
+      }
+      return f;
+    }
+  };
+};
+
+struct PRM
+{
+  ll minKey(vector<ll> key, vector<bool> mstSet)
+  {
+  	ll min = INF, min_index;
+  	for(ll v = 0; v < key.size(); v++)
+    {
+      if(mstSet[v] == false && key[v] < min)
+      {
+        min = key[v], min_index = v;
+      }
+    }
+  	return min_index;
+  }
+  vector<pair<pair<ll,ll>,ll>> MST(vector<ll> parent, vector<vector<ll>> graph)
+  {
+    vector<pair<pair<ll,ll>,ll>> res;
+  	for(ll i = 1; i < parent.size(); i++)
+    {
+      res.push_back({{parent[i], i}, graph[i][parent[i]]});
+    }
+    return res;
+  }
+  vector<pair<pair<ll,ll>,ll>> primMST(vector<vector<ll>> graph)
+  {
+    vector<ll> parent(graph.size());
+    vector<ll> key(graph.size(), INF);
+    vector<bool> mstSet(graph.size(), false);
+  	key[0] = 0;
+  	parent[0] = -1;
+  	for(ll count = 0; count < graph.size() - 1; count++)
+  	{
+  		ll u = minKey(key, mstSet);
+  		mstSet[u] = true;
+  		for(ll v = 0; v < graph.size(); v++)
+      {
+        if(graph[u][v] && mstSet[v] == false && graph[u][v] < key[v])
+        {
+          parent[v] = u;
+          key[v] = graph[u][v];
+        }
+      }
+  	}
+  	return (MST(parent, graph));
+  }
+};
+
+struct TPS
+{
+  void topologicalSortUtil(ll  v, vector<vector<ll>>adj, vector<bool> &visited, stack<ll> &Stack)
+  {
+    visited[v] = true;
+    for (auto i = adj[v].begin(); i != adj[v].end(); ++i)
+    {
+      if(!visited[*i])
+      {
+        topologicalSortUtil(*i, adj, visited, Stack);
+      }
+    }
+    Stack.push(v);
+  }
+  vector<ll> topologicalSort(vector<vector<ll>>v)
+  {
+    vector<bool> visited(v.size(), false);
+    stack<ll> Stack;
+    vector<ll> res;
+    for(ll i = 0; i < v.size(); i++)
+    {
+      if(visited[i] == false)
+      {
+        topologicalSortUtil(i, v, visited, Stack);
+      }
+    }
+    while(Stack.empty() == false)
+    {
+      res.push_back(Stack.top());
+      Stack.pop();
+    }
+    return res;
+  }
+};
+
+struct CYD
+{
+  //Cycle-Detection
+  struct DGP
+  {
+    //Directed-Graph
+    bool isCyclicUtil(ll v, vector<vector<ll>> adj, vector<bool> &visited, vector<bool> &recStack)
+    {
+      if(visited[v] == false)
+      {
+        visited[v] = true;
+        recStack[v] = true;
+        for(auto i = adj[v].begin(); i != adj[v].end(); ++i)
+        {
+          if (!visited[*i] && isCyclicUtil(*i, adj, visited, recStack))
+          {
+            return true;
+          }
+          else if (recStack[*i])
+          {
+            return true;
+          }
+        }
+      }
+      recStack[v] = false;
+      return false;
+    }
+    bool isCyclic(vector<vector<ll>> v)
+    {
+      vector<bool> visited(v.size(), false);
+      vector<bool> recStack(v.size(), false);
+      for(ll i = 0; i < v.size(); i++)
+      {
+        if(isCyclicUtil(i, v, visited, recStack))
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+  };
+
+  struct UGP
+  {
+    //Undirected-Graph
+    bool isCyclicConntected(vector<vector<ll>> adj, ll s, vector<bool> &visited)
+    {
+      vector<ll> parent(adj.size(), -1);
+      queue<ll> q;
+      visited[s] = true;
+      q.push(s);
+      while(!q.empty())
+      {
+        ll u = q.front();
+        q.pop();
+        for(auto v : adj[u])
+        {
+          if(!visited[v])
+          {
+            visited[v] = true;
+            q.push(v);
+            parent[v] = u;
+          }
+          else if(parent[u] != v)
+          {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    bool isCyclicDisconntected(vector<vector<ll>> adj)
+    {
+      vector<bool> visited(adj.size(), false);
+      for(int i = 0; i < adj.size(); i++)
+      {
+        if(!visited[i] && isCyclicConntected(adj, i, visited))
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+  };
+};
+
 struct FFT
 {
 
@@ -1942,54 +2460,45 @@ struct NTT
 
 };
 
-struct PRM
-{
-  //Prime's
-};
-
-struct TPS
-{
-  //Topological-Sorting
-};
-
-struct CYD
-{
-  //Cycle-Detection
-};
-
 struct MTM
 {
   //Meet-In-The-Middle
 };
 
-struct CVH
-{
-  //Convex-Hull
-  //Monotone-chain
-  //Graham-Scan
-  //Gift-Wrapping
-};
-
-struct FLW
-{
-  //Ford-Fulkerson
-  //Edmonds-Karp
-  //Dinic's
-};
-
 struct STK
 {
-  //Next-Greater-Left
-  //Next-Smaller-Left
-  //Next-Greater-Right
-  //Next-Smaller-Right
+  struct NGL
+  {
+    //Next-Greater-Left
+  };
+  struct NSL
+  {
+    //Next-Smaller-Left
+  };
+  struct NGR
+  {
+    //Next-Greater-Right
+  };
+  struct NSR
+  {
+    //Next-Smaller-Right
+  };
 };
 
 struct SLW
 {
-  //Sliding-Window-Maximum
-  //Sliding-Window-Minimum
-  //Sliding-Window-Median
+  struct SMX
+  {
+    //Sliding-Window-Maximum
+  };
+  struct SMN
+  {
+    //Sliding-Window-Minimum
+  };
+  struct SMD
+  {
+    //Sliding-Window-Median
+  };
 };
 
 struct IGQ
@@ -2111,7 +2620,7 @@ struct DP
 
 bool comp(ll a, ll b)
 {
-  return a.t < b.t;
+  return a < b;
 }
 
 int main()
