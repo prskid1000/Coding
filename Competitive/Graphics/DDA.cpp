@@ -33,7 +33,7 @@ int main()
       x += xinc;
       y += yinc;
       putpixel(100 + x, 100 + y, 15);
-      delay(10);
+      delay(300);
     }
 
     //draw ends
@@ -41,4 +41,3 @@ int main()
     closegraph();
     return 0;
 }
- 

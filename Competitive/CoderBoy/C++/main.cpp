@@ -35,11 +35,12 @@ using namespace std;
 using namespace std::chrono;
 using namespace __gnu_pbds;
 
-struct MT
+struct MTH
 {
   vector<ll> fact;
   vector<bool> is_prime;
-  MT(ll n = 200001, ll q = R)
+
+  MTH(ll n = 200001, ll q = R)
   {
     fact.resize(n);
     is_prime.assign(n + 1, true);
@@ -60,6 +61,28 @@ struct MT
       }
     }
   }
+
+  vector<ll> getDivisor(ll n)
+  {
+    vector<ll> res;
+    for(ll i = 1; i <= sqrt(n); i++)
+    {
+      if(n % i == 0)
+      {
+        if(n / i == i)
+        {
+          res.push_back(i);
+        }
+      }
+      else
+      {
+        res.push_back(i);
+        res.push_back(n / i);
+      }
+    }
+    return res;
+  }
+
   ll power_mod_q(ll x, ll n, ll q = R)
   {
     if(n == 0)
@@ -75,14 +98,17 @@ struct MT
       return (x * power_mod_q((x * x) % q, n / 2, q)) % q;
     }
   }
+
   ll inverse_mod_q(ll n, ll q = R)
   {
     return power_mod_q(n, q - 2, q);
   }
+
   ll nCr_mod_q(ll n, ll r, ll q = R)
   {
     return (((fact[n] * inverse_mod_q(fact[r], q)) % q) * inverse_mod_q(fact[n - r], q)) % q;
   }
+
   ll power(ll x, ll n)
   {
     if(n == 0)
@@ -98,6 +124,7 @@ struct MT
       return x * power(x * x, n / 2);
     }
   }
+
   vector<vector<ll>> multiply(vector<vector<ll>>& a, vector<vector<ll>>& b)
   {
     ll p = a.size(), q = b.size(), r = b[0].size();
@@ -114,6 +141,7 @@ struct MT
     }
     return c;
   }
+
   vector<vector<ll>> add(vector<vector<ll>>& a, vector<vector<ll>>& b)
   {
     ll p = a.size(), q = a[0].size();
@@ -127,6 +155,7 @@ struct MT
     }
     return c;
   }
+
   vector<vector<ll>> power(vector<vector<ll>>& a, ll n)
   {
     vector<vector<ll>> c(a.size(), vector<ll>(a.size(), 0));
@@ -147,6 +176,7 @@ struct MT
       return multiply(a, c = power(c = multiply(a, a), n / 2));
     }
   }
+
   ll fibn(ll n)
   {
     vector<vector<ll>> fib(2, vector<ll>(2,1));
@@ -161,19 +191,156 @@ struct MT
       return ans[0][0];
     }
   }
-  //Euclidian
-  //Diphantine
-  //Euler Totient
-  //Fermet Little
-  //Wilson's
-  //Z-functions
-  //Karatsuba
+
+  ll karatsuba(ll x, ll y)
+  {
+    ll xlen = to_string(x).length();
+    ll ylen = to_string(y).length();
+    ll n = (ll)max(xlen, ylen);
+    if(n < 10)
+    {
+      return x*y;
+    }
+    n = (n / 2) + (n % 2);
+    ll multiplier = pow(10, n);
+    ll b = x / multiplier;
+    ll a = x - b*multiplier;
+    ll d = y / multiplier;
+    ll c = y - d*n;
+    ll z0 = karatsuba(a, c);
+    ll z1 = karatsuba(a + b, c + d);
+    ll z2 = karatsuba(b, d);
+    return (z0 + ((z1 - z0 - z2) * multiplier) + (z2*(ll)(pow(0, 2*n))));
+  }
+
+  ll euclidean(ll a, ll b, ll &x, ll &y)
+  {
+    if(a == 0)
+    {
+      x = 0;
+      y = 1;
+      return b;
+    }
+    ll x1, y1;
+    ll gcd = euclidean(b % a, a, x1, y1);
+    x = y1 - (b / a) * x1;
+    y = x1;
+    return gcd;
+  }
+
+  void shift_solution(ll& x, ll& y, ll a, ll b, ll cnt)
+  {
+    x += cnt * b;
+    y -= cnt * a;
+  }
+
+  ll diphantine(ll a, ll b, ll c, ll minx, ll maxx, ll miny, ll maxy)
+  {
+    ll x, y, g;
+    if (!diphantine(a, b, c, x, y, g))
+    {
+      return 0;
+    }
+    a /= g;
+    b /= g;
+    ll sign_a = a > 0 ? +1 : -1;
+    ll sign_b = b > 0 ? +1 : -1;
+    shift_solution(x, y, a, b, (minx - x) / b);
+    if (x < minx)
+    {
+      shift_solution(x, y, a, b, sign_b);
+    }
+    if (x > maxx)
+    {
+      return 0;
+    }
+    ll lx1 = x;
+    shift_solution(x, y, a, b, (maxx - x) / b);
+    if (x > maxx)
+    {
+      shift_solution(x, y, a, b, -sign_b);
+    }
+    ll rx1 = x;
+    shift_solution(x, y, a, b, -(miny - y) / a);
+    if (y < miny)
+    {
+      shift_solution(x, y, a, b, -sign_a);
+    }
+    if (y > maxy)
+    {
+      return 0;
+    }
+    ll lx2 = x;
+    shift_solution(x, y, a, b, -(maxy - y) / a);
+    if (y > maxy)
+    {
+      shift_solution(x, y, a, b, sign_a);
+    }
+    ll rx2 = x;
+    if (lx2 > rx2)
+    {
+      swap(lx2, rx2);
+    }
+    ll lx = max(lx1, lx2);
+    ll rx = min(rx1, rx2);
+    if (lx > rx)
+    {
+      return 0;
+    }
+    return (rx - lx) / abs(b) + 1;
+  }
+
+  vector<ll> euler_totient(ll n)
+  {
+    vector<ll> phi(n + 1);
+    phi[0] = 0;
+    phi[1] = 1;
+    for(ll i = 2; i <= n; i++)
+    {
+      phi[i] = i;
+    }
+    for(ll i = 2; i <= n; i++)
+    {
+      if(phi[i] == i)
+      {
+        for(ll j = i; j <= n; j += i)
+        {
+          phi[j] -= phi[j] / i;
+        }
+      }
+    }
+    return phi;
+  }
+
+  vector<ll> zfunction(string s)
+  {
+    ll n = (ll) s.length();
+    vector<ll> z(n);
+    for(ll i = 1, l = 0, r = 0; i < n; ++i)
+     {
+      if(i <= r)
+      {
+        z[i] = min (r - i + 1, z[i - l]);
+      }
+      while(i + z[i] < n && s[z[i]] == s[i + z[i]])
+      {
+        ++z[i];
+      }
+      if(i + z[i] - 1 > r)
+      {
+        l = i;
+        r = i + z[i] - 1;
+      }
+    }
+    return z;
+  }
 };
 
 struct DSU
 {
   //Disjoint-Set-Union
   vector<ll> rank, parent, num;
+
   DSU(ll n)
   {
     rank.assign(n, 0);
@@ -184,6 +351,7 @@ struct DSU
       parent[i] = i;
     }
   }
+
   ll find_set(ll i)
   {
     if(i == parent[i])
@@ -195,6 +363,7 @@ struct DSU
       return parent[i] = find_set(parent[i]);
     }
   }
+
   bool is_same_set(ll i, ll j)
   {
     if(find_set(i) == find_set(j))
@@ -206,6 +375,7 @@ struct DSU
       return false;
     }
   }
+
   void union_set(ll i, ll j)
   {
     if(!is_same_set(i, j))
@@ -233,6 +403,7 @@ struct KMP
 {
   //Knuth–Morris–Pratt
   vector<ll> lps;
+
   KMP(vector<char>& p, vector<char>& t)
   {
     lps.assign(p.size(), 0);
@@ -284,6 +455,7 @@ struct MCH
 {
   //Manachar
   vector<ll> P;
+
   vector<char> convert(vector<char>& s)
   {
       vector<char> v;
@@ -297,6 +469,7 @@ struct MCH
       v.push_back('$');
       return v;
   }
+
   vector<char> manachar(vector<char>& s)
   {
     vector<char> Q(convert(s));
@@ -348,6 +521,7 @@ struct BST
     ll key = 0;
     node *left = NULL, *right = NULL;
   };
+
   node* insert(node* root, ll key)
   {
     if(root == NULL)
@@ -366,6 +540,7 @@ struct BST
     }
     return root;
   }
+
   node* search(node* root, ll key)
   {
     if(root == NULL || root->key == key)
@@ -378,6 +553,7 @@ struct BST
     }
     return search(root->left, key);
   }
+
   node* minNode(node* root)
   {
       node *current = root;
@@ -388,6 +564,7 @@ struct BST
       }
       return current;
   }
+
   node* remove(node* root, ll key)
   {
     if (root == NULL)
@@ -436,6 +613,7 @@ struct TRI
     bool *childf[26] = {0};
     bool isEnd = false;
   };
+
   bool search(node *root, string s)
   {
     node *ptr = root;
@@ -454,6 +632,7 @@ struct TRI
     }
     return (ptr != NULL && ptr->isEnd);
   }
+
   void insert(node *root, string s)
   {
     node *ptr = root;
@@ -472,6 +651,7 @@ struct TRI
       ptr->isEnd = true;
     }
   }
+
   void remove(node *root, string s)
   {
     node *ptr = root;
@@ -500,15 +680,18 @@ struct FTR
   //Fenwick-Tree
   vector<ll> bit;
   ll n;
+
   FTR(ll n)
   {
     this->n = n;
     bit.assign(n, 0);
   }
+
   FTR(vector<ll> a) : FTR(a.size())
   {
     for (ll i = 0; i < a.size(); i++) ops(i, a[i]);
   }
+
   ll query(ll r)
   {
     ll ret = 0;
@@ -518,10 +701,12 @@ struct FTR
     }
     return ret;
   }
+
   ll queryRange(ll l, ll r)
   {
       return query(r) - query(l - 1);
   }
+
   void ops(ll idx, ll delta)
   {
       for (; idx < n; idx = idx | (idx + 1))
@@ -536,6 +721,7 @@ struct F2D
   //2D-Range-Query
   vector<vector<ll>> bit;
   ll n, m;
+
   F2D(ll n, ll m)
   {
     this->n = n;
@@ -543,6 +729,7 @@ struct F2D
     vector<ll> tmp(m, 0);
     bit.assign(n, tmp);
   }
+
   F2D(vector<vector<ll>> a) : F2D(a.size(), a[0].size())
   {
     for (ll i = 0; i < a.size(); i++)
@@ -553,6 +740,7 @@ struct F2D
       }
     }
   }
+
   ll query(ll x, ll y)
   {
     ll ret = 0;
@@ -565,6 +753,7 @@ struct F2D
     }
     return ret;
   }
+
   void ops(ll x, ll y, ll delta)
   {
     for (ll i = x; i < n; i = i | (i + 1))
@@ -594,6 +783,7 @@ struct STR
     build(tree, v, 2 * idx + 1, mid + 1, e);
     tree[idx] = tree[2 * idx] + tree[2 * idx + 1];
   }
+
   ll query(vector<ll>tree, ll idx, ll s, ll e, ll l, ll r)
   {
     if(l > e || r < s)
@@ -609,6 +799,7 @@ struct STR
     ll right = query(tree, 2 * idx + 1, mid + 1, e, l, r);
     return (left + right);
   }
+
   void pointUpdate(vector<ll> & tree, ll idx, ll s, ll e, ll i, ll val)
   {
     if(i < s || i > e)
@@ -625,6 +816,7 @@ struct STR
     pointUpdate(tree, 2 * idx + 1, mid + 1, e, i, val);
     tree[idx] = tree[2 * idx] + tree[2 * idx + 1];
   }
+
   void rangeUpdate(vector<ll>& tree, ll idx, ll s, ll e, ll l, ll r, ll chg)
   {
     if(l > e || r < s)
@@ -665,6 +857,7 @@ struct STG
     mask.push_back(pat);
     mask_gen(mask, pat, i + 1);
   }
+
   vector<vector<ll>> com_gen(vector<ll> v, ll k = 3)
   {
     ll n = v.size();
@@ -686,6 +879,7 @@ struct STG
     while(prev_permutation(bitmask.begin(), bitmask.end()));
     return res;
   }
+
   vector<vector<ll>> perm_gen(vector<ll> v, ll k = 3)
   {
     vector<vector<ll>> res;
@@ -736,6 +930,7 @@ struct BDG
   //Finding-Bridges-Online
   vector<ll> par, dsu_2ecc, dsu_cc, dsu_cc_size, last_visit;
   ll bridges = 0, lca_iteration = 0;
+
   BDG(ll n)
   {
     par.resize(n);
@@ -753,6 +948,7 @@ struct BDG
     }
     bridges = 0;
   }
+
   ll find_2ecc(ll v)
   {
     if (v == -1)
@@ -764,11 +960,13 @@ struct BDG
       return dsu_2ecc[v] == v ? v : dsu_2ecc[v] = find_2ecc(dsu_2ecc[v]);
     }
   }
+
   ll find_cc(ll v)
   {
     v = find_2ecc(v);
     return dsu_cc[v] == v ? v : dsu_cc[v] = find_cc(dsu_cc[v]);
   }
+
   void make_root(ll v)
   {
     v = find_2ecc(v);
@@ -783,6 +981,7 @@ struct BDG
     }
     dsu_cc_size[root] = dsu_cc_size[child];
   }
+
   void merge_path (ll a, ll b)
   {
     ++lca_iteration;
@@ -828,6 +1027,7 @@ struct BDG
       --bridges;
     }
   }
+
   void add_edge(ll a, ll b)
   {
     a = find_2ecc(a);
@@ -868,6 +1068,7 @@ struct KRK
       return weight < other.weight;
     }
   };
+
   vector<pair<ll, ll>> kruksal(vector<vector<ll>>v)
   {
     ll n = v.size(), cost = 0;
@@ -907,6 +1108,7 @@ struct ART
   vector<ll> tin, low;
   vector<ll> cut;
   ll timer;
+
   void dfs(ll v, int p = -1)
    {
      visited[v] = true;
@@ -938,6 +1140,7 @@ struct ART
        cut.push_back(v);
      }
    }
+
   vector<ll> find_cut(vector<vector<ll>> v)
   {
     adj.assign(v.begin(), v.end());
@@ -973,12 +1176,14 @@ struct BPT
       parent[i].first = i;
     }
   }
+
   void make_set(ll v)
   {
     parent[v] = make_pair(v, 0);
     rank[v] = 0;
     bipartite[v] = true;
   }
+
   pair<ll, ll> find_set(ll v)
   {
     if (v != parent[v].first)
@@ -989,6 +1194,7 @@ struct BPT
     }
     return parent[v];
   }
+
   void add_edge(ll a, ll b)
   {
     pair<ll, ll> pa = find_set(a);
@@ -1014,6 +1220,7 @@ struct BPT
       }
     }
   }
+
   bool is_bipartite(ll v)
   {
     return bipartite[find_set(v).first];
@@ -1027,6 +1234,7 @@ struct SCC
   {
     //Tarjan's
     vector<vector<ll>> adj;
+
     void util(ll u, vector<ll> disc, vector<ll> low, stack<ll> *st, vector<ll> stackMember, vector<vector<ll>> &res)
     {
       static ll time = 0;
@@ -1063,6 +1271,7 @@ struct SCC
         st->pop();
       }
     }
+
     vector<vector<ll>> tarjan_ssc(vector<vector<ll>> v)
     {
       vector<ll> disc(v.size());
@@ -1090,6 +1299,7 @@ struct SCC
     vector<vector<ll>> g, gr;
     vector<bool> used;
     vector<ll> order, component;
+
     void dfs1 (ll v)
     {
       used[v] = true;
@@ -1102,6 +1312,7 @@ struct SCC
       }
       order.push_back (v);
     }
+
     void dfs2 (int v)
     {
       used[v] = true;
@@ -1114,6 +1325,7 @@ struct SCC
         }
       }
     }
+
     vector<vector<ll>> kosaraju(vector<vector<ll>> adj)
     {
       vector<vector<ll>> res;
@@ -1159,6 +1371,7 @@ struct LCA
     vector<vector<ll>> adj;
     vector<ll> tin, tout;
     vector<vector<ll>> up;
+
     vector<vector<ll>> blca(vector<vector<ll>> v, ll r)
     {
       vector<vector<ll>> res(v);
@@ -1174,6 +1387,7 @@ struct LCA
       }
       return res;
     }
+
     void dfs(ll v, ll p)
     {
       tin[v] = ++timer;
@@ -1191,6 +1405,7 @@ struct LCA
       }
       tout[v] = ++timer;
     }
+
     bool is_ancestor(ll u, ll v)
     {
       return tin[u] <= tin[v] && tout[u] >= tout[v];
@@ -1214,6 +1429,7 @@ struct LCA
       }
       return up[u][0];
     }
+
     void preprocess(ll root)
     {
       tin.resize(n);
@@ -1234,6 +1450,7 @@ struct LCA
     vector<ll> ancestor;
     vector<bool> visited;
     DSU dsu = DSU(1000000);
+
     void dfs(ll v)
     {
       visited[v] = true;
@@ -1255,6 +1472,7 @@ struct LCA
         }
       }
     }
+
     vector<vector<ll>> lca(vector<vector<ll>>v ,vector<vector<ll>>q)
     {
       adj.assign(v.begin(), v.end());
@@ -1273,6 +1491,7 @@ struct LCA
     vector<ll> height, euler, first, segtree;
     vector<bool> visited;
     ll n;
+
     ET(vector<vector<ll>> &adj, ll root = 0)
     {
       n = adj.size();
@@ -1285,6 +1504,7 @@ struct LCA
       segtree.resize(m * 4);
       build(1, 0, m - 1);
     }
+
     void dfs(vector<vector<ll>> &adj, ll node, ll h = 0)
     {
       visited[node] = true;
@@ -1300,6 +1520,7 @@ struct LCA
         }
       }
     }
+
     void build(ll node, ll b, ll e)
     {
       if (b == e)
@@ -1315,6 +1536,7 @@ struct LCA
         segtree[node] = (height[l] < height[r]) ? l : r;
       }
     }
+
    ll query(ll node, ll b, ll e, ll l, ll r)
    {
      if (b > r || e < l)
@@ -1338,6 +1560,7 @@ struct LCA
      }
      return height[left] < height[right] ? left : right;
    }
+
    ll lca(ll u, ll v)
    {
      ll left = first[u], right = first[v];
@@ -1402,6 +1625,7 @@ struct LHD
   vector<ll> baseArray, chainInd, chainHead, posInBase, depth;
   vector<ll> otherEnd, subsize, st, qt;
   ll ptr, chainNo;
+
   void decompose(vector<vector<ll>> v, vector<vector<ll>> c)
   {
     adj.assign(v.begin(), v.end());
@@ -1418,6 +1642,7 @@ struct LHD
     qt.assign(v.size() * 6, 0);
     pa.assign(v.size() * 6, vector<ll>(v.size()));
   }
+
   void make_tree(ll cur, ll s, ll e)
   {
   	if(s == e-1)
@@ -1430,6 +1655,7 @@ struct LHD
   	make_tree(c2, m, e);
   	st[cur] = st[c1] > st[c2] ? st[c1] : st[c2];
   }
+
   void update_tree(ll cur, ll s, ll e, ll x, ll val)
   {
   	if(s > x || e <= x)
@@ -1446,6 +1672,7 @@ struct LHD
   	update_tree(c2, m, e, x, val);
   	st[cur] = st[c1] > st[c2] ? st[c1] : st[c2];
   }
+
   void query_tree(ll cur, ll s, ll e, ll S, ll E)
   {
   	if(s >= E || e <= S)
@@ -1463,6 +1690,7 @@ struct LHD
   	query_tree(c2, m, e, S, E);
   	qt[cur] = qt[c1] > qt[c2] ? qt[c1] : qt[c2];
   }
+
   ll query_up(ll u, ll v)
   {
     if(u == v) return 0;
@@ -1493,6 +1721,7 @@ struct LHD
   	 }
      return ans;
   }
+
   ll LCA(ll u, ll v)
   {
   	if(depth[u] < depth[v])
@@ -1521,6 +1750,7 @@ struct LHD
     }
   	return pa[0][u];
   }
+
   void query(ll u, ll v)
   {
     ll lca = LCA(u, v);
@@ -1532,11 +1762,13 @@ struct LHD
     }
   	cout << ans << "\n";
   }
+
   void change(ll i, ll val)
   {
   	ll u = otherEnd[i];
   	update_tree(1, 0, ptr, posInBase[u], val);
   }
+
   void HLD(ll curNode, ll cost, ll prev)
   {
   	if(chainHead[chainNo] == -1)
@@ -1574,6 +1806,7 @@ struct LHD
       }
   	}
   }
+
   void dfs(ll cur, ll prev, ll _depth=0)
   {
     pa[0][cur] = prev;
@@ -1601,6 +1834,7 @@ struct SPM
   {
     return min(a , b);
   }
+
   void construct(vector<ll> v, ll k)
   {
     log.assign(v.size() + 1, 0);
@@ -1621,6 +1855,7 @@ struct SPM
       }
     }
   }
+
   ll query(ll l , ll r)
   {
     ll j = log[r - l + 1];
@@ -1783,6 +2018,7 @@ struct PTF
         }
       }
     }
+
     vector<ll> restore_path(ll s, ll t, vector<ll> const& p)
     {
       vector<ll> path;
@@ -1852,6 +2088,7 @@ struct PTF
         return make_pair(l / block_size, r) < make_pair(other.l / block_size, other.r);
       }
     };
+
     vector<ll> mo_s_algorithm(vector<Query> queries)
     {
       vector<ll> answers(queries.size());
@@ -1922,6 +2159,7 @@ struct PSA
     }
     return res;
   }
+
   vector<ll> sufix(vector<ll> v)
   {
     v = prefix(v);
@@ -1949,10 +2187,12 @@ struct CVH
         return x < p.x || (x == p.x && y < p.y);
       }
     };
+
     ll cross_product(Point O, Point A, Point B)
     {
       return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
     }
+
     vector<pair<ll,ll>> convex_hull(vector<pair<ll,ll>> pr)
     {
       ll n = pr.size(), k = 0;
@@ -2003,18 +2243,22 @@ struct CVH
     {
       ld x, y;
     };
+
     static bool cmp(pt a, pt b)
     {
       return a.x < b.x || (a.x == b.x && a.y < b.y);
     }
+
     bool cw(pt a, pt b, pt c)
     {
       return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) < 0;
     }
+
     bool ccw(pt a, pt b, pt c)
     {
       return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) > 0;
     }
+
     void convex_hull(vector<pair<ll, ll>> pr)
     {
       vector<pt> a;
@@ -2072,6 +2316,7 @@ struct CVH
     {
       ll x, y;
     };
+
     ll orientation(Point p, Point q, Point r)
     {
         ll val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
@@ -2081,6 +2326,7 @@ struct CVH
         }
         return (val > 0)? 1: 2;
     }
+
     vector<pair<ll, ll>> convexHull(vector<pair<ll, ll>>v)
     {
       vector<Point> points;
@@ -2156,6 +2402,7 @@ struct FLW
       }
       return (visited[t] == true);
     }
+
     ll fordFulkerson(vector<vector<ll>> Graph, ll s, ll t)
     {
       ll u, v, max_flow = 0;
@@ -2189,18 +2436,21 @@ struct FLW
       ll v, u, cap, flow = 0;
       FlowEdge(ll v, ll u, ll cap) : v(v), u(u), cap(cap) {}
     };
+
     const ll flow_inf = 1e18;
     vector<FlowEdge> edges;
     vector<vector<ll>> adj;
     ll n, m = 0, s, t;
     vector<ll> level, ptr;
     queue<ll> q;
+
     DNC(ll n, ll s, ll t) : n(n), s(s), t(t)
     {
       adj.resize(n);
       level.resize(n);
       ptr.resize(n);
     }
+
     void add_edge(ll v, ll u, ll cap)
     {
       edges.emplace_back(v, u, cap);
@@ -2209,6 +2459,7 @@ struct FLW
       adj[u].push_back(m + 1);
       m += 2;
     }
+
     bool bfs()
     {
       while(!q.empty())
@@ -2231,6 +2482,7 @@ struct FLW
       }
       return level[t] != -1;
     }
+
     ll dfs(ll v, ll pushed)
     {
       if(pushed == 0)
@@ -2259,6 +2511,7 @@ struct FLW
       }
       return 0;
     }
+
     ll flow()
     {
       ll f = 0;
@@ -2296,6 +2549,7 @@ struct PRM
     }
   	return min_index;
   }
+
   vector<pair<pair<ll,ll>,ll>> MST(vector<ll> parent, vector<vector<ll>> graph)
   {
     vector<pair<pair<ll,ll>,ll>> res;
@@ -2305,6 +2559,7 @@ struct PRM
     }
     return res;
   }
+
   vector<pair<pair<ll,ll>,ll>> primMST(vector<vector<ll>> graph)
   {
     vector<ll> parent(graph.size());
@@ -2343,6 +2598,7 @@ struct TPS
     }
     Stack.push(v);
   }
+
   vector<ll> topologicalSort(vector<vector<ll>>v)
   {
     vector<bool> visited(v.size(), false);
@@ -2391,6 +2647,7 @@ struct CYD
       recStack[v] = false;
       return false;
     }
+
     bool isCyclic(vector<vector<ll>> v)
     {
       vector<bool> visited(v.size(), false);
@@ -2435,10 +2692,11 @@ struct CYD
       }
       return false;
     }
+
     bool isCyclicDisconntected(vector<vector<ll>> adj)
     {
       vector<bool> visited(adj.size(), false);
-      for(int i = 0; i < adj.size(); i++)
+      for(ll i = 0; i < adj.size(); i++)
       {
         if(!visited[i] && isCyclicConntected(adj, i, visited))
         {
@@ -2452,17 +2710,104 @@ struct CYD
 
 struct FFT
 {
+  //Fast-Fourior-Tranform
+  using cd = complex<double>;
+  const ld PI = acos(-1);
 
+  void fft(vector<cd> & a, bool invert)
+  {
+    ll n = a.size();
+    for (ll i = 1, j = 0; i < n; i++)
+     {
+       ll bit = n >> 1;
+       for (; j & bit; bit >>= 1)
+       {
+         j ^= bit;
+       }
+       j ^= bit;
+       if (i < j)
+       {
+         swap(a[i], a[j]);
+       }
+     }
+    for(ll len = 2; len <= n; len <<= 1)
+    {
+      ld ang = 2 * PI / len * (invert ? -1 : 1);
+      cd wlen(cos(ang), sin(ang));
+      for (int i = 0; i < n; i += len)
+       {
+         cd w(1);
+         for (ll j = 0; j < len / 2; j++)
+         {
+           cd u = a[i+j], v = a[i+j+len/2] * w;
+           a[i+j] = u + v;
+           a[i+j+len/2] = u - v;
+           w *= wlen;
+         }
+       }
+    }
+    if(invert)
+    {
+      for (cd & x : a)
+      {
+        x /= n;
+      }
+    }
+  }
 };
 
 struct NTT
 {
+  const ll mod = 7340033;
+  const ll root = 5;
+  const ll root_1 = 4404020;
+  const ll root_pw = 1 << 20;
 
-};
-
-struct MTM
-{
-  //Meet-In-The-Middle
+  void fft(vector<int> & a, bool invert)
+  {
+    ll n = a.size();
+    for(ll i = 1, j = 0; i < n; i++)
+     {
+       ll bit = n >> 1;
+       for (; j & bit; bit >>= 1)
+       {
+         j ^= bit;
+       }
+       j ^= bit;
+       if (i < j)
+       {
+         swap(a[i], a[j]);
+       }
+     }
+     for(ll len = 2; len <= n; len <<= 1)
+     {
+       ll wlen = invert ? root_1 : root;
+       for(ll i = len; i < root_pw; i <<= 1)
+       {
+         wlen = (ll)(1LL * wlen * wlen % mod);
+       }
+       for (ll i = 0; i < n; i += len)
+       {
+         ll w = 1;
+         for(ll j = 0; j < len / 2; j++)
+         {
+           ll u = a[i+j], v = (ll)(1LL * a[i+j+len/2] * w % mod);
+           a[i+j] = u + v < mod ? u + v : u + v - mod;
+           a[i+j+len/2] = u - v >= 0 ? u - v : u - v + mod;
+           w = (ll)(1LL * w * wlen % mod);
+         }
+       }
+     }
+     if(invert)
+     {
+       MTH m;
+       ll n_1 = m.inverse_mod_q(n, mod);
+       for(ll x : a)
+       {
+         x = (ll)(1LL * x * n_1 % mod);
+       }
+     }
+   }
 };
 
 struct STK
@@ -2470,19 +2815,171 @@ struct STK
   struct NGL
   {
     //Next-Greater-Left
+    vector<ll> greater(vector<ll> arr)
+    {
+      vector<ll> v;
+      stack<ll> s;
+      for(ll i = 0; i < v.size(); i++)
+      {
+        if(s.size() == 0)
+        {
+          v.push_back(-1);
+        }
+        else if(s.size() > 0 && s.top() > arr[i])
+        {
+          v.push_back(s.top());
+        }
+        else if(s.size() > 0 && s.top() <= arr[i])
+        {
+          while(s.size() > 0 && s.top() <= arr[i])
+          {
+            s.pop();
+          }
+          if(s.size() == 0)
+          {
+            v.push_back(-1);
+          }
+          else
+          {
+            v.push_back(s.top());
+          }
+        }
+      }
+      return v;
+    }
   };
   struct NSL
   {
     //Next-Smaller-Left
+    vector<ll> smaller(vector<ll> arr)
+    {
+      vector<ll> v;
+      stack<ll> s;
+      for(ll i = 0; i < v.size(); i--)
+      {
+        if(s.size() == 0)
+        {
+          v.push_back(-1);
+        }
+        else if(s.size() > 0 && s.top() < arr[i])
+        {
+          v.push_back(s.top());
+        }
+        else if(s.size() > 0 && s.top() >= arr[i])
+        {
+          while(s.size() > 0 && s.top() >= arr[i])
+          {
+            s.pop();
+          }
+          if(s.size() == 0)
+          {
+            v.push_back(-1);
+          }
+          else
+          {
+            v.push_back(s.top());
+          }
+        }
+      }
+      return v;
+    }
   };
   struct NGR
   {
     //Next-Greater-Right
+    vector<ll> greater(vector<ll> arr)
+    {
+      vector<ll> v;
+      stack<ll> s;
+      for(ll i = v.size() - 1; i >= 0; i--)
+      {
+        if(s.size() == 0)
+        {
+          v.push_back(-1);
+        }
+        else if(s.size() > 0 && s.top() > arr[i])
+        {
+          v.push_back(s.top());
+        }
+        else if(s.size() > 0 && s.top() <= arr[i])
+        {
+          while(s.size() > 0 && s.top() <= arr[i])
+          {
+            s.pop();
+          }
+          if(s.size() == 0)
+          {
+            v.push_back(-1);
+          }
+          else
+          {
+            v.push_back(s.top());
+          }
+        }
+        reverse(v.begin(), v.end());
+      }
+      return v;
+    }
   };
   struct NSR
   {
     //Next-Smaller-Right
+    vector<ll> smaller(vector<ll> arr)
+    {
+      vector<ll> v;
+      stack<ll> s;
+      for(ll i = v.size() - 1; i >= 0; i--)
+      {
+        if(s.size() == 0)
+        {
+          v.push_back(-1);
+        }
+        else if(s.size() > 0 && s.top() < arr[i])
+        {
+          v.push_back(s.top());
+        }
+        else if(s.size() > 0 && s.top() >= arr[i])
+        {
+          while(s.size() > 0 && s.top() >= arr[i])
+          {
+            s.pop();
+          }
+          if(s.size() == 0)
+          {
+            v.push_back(-1);
+          }
+          else
+          {
+            v.push_back(s.top());
+          }
+        }
+        reverse(v.begin(), v.end());
+      }
+      return v;
+    }
   };
+};
+
+struct KND
+{
+  //Kanade's algorithm
+  ll maxSubArraySum(vector<ll> a, ll size)
+  {
+    ll mx = INT_MIN, sum = 0;
+    for (ll i = 0; i < size; i++)
+    {
+      sum += a[i];
+      if (mx < sum)
+      {
+        mx = sum;
+      }
+      if (sum < 0)
+      {
+        sum = 0;
+      }
+    }
+    return mx;
+  }
 };
 
 struct SLW
@@ -2490,15 +2987,120 @@ struct SLW
   struct SMX
   {
     //Sliding-Window-Maximum
+    vector<ll> maximum(vector<ll> arr, ll k)
+    {
+      deque<ll> Qi(k);
+      vector<ll> res;
+      ll i;
+      for(i = 0; i < k; i++)
+      {
+        while(!Qi.empty() && arr[i] >= arr[Qi.back()])
+        {
+          Qi.pop_back();
+        }
+        Qi.push_back(i);
+      }
+      for(; i < arr.size(); i++)
+      {
+        res.push_back(arr[Qi.front()]);
+        while(!Qi.empty() && Qi.front() <= i - k)
+        {
+          Qi.pop_back();
+        }
+        while(Qi.empty() && arr[i] >= arr[Qi.back()])
+        {
+          Qi.pop_back();
+        }
+        Qi.push_back(i);
+      }
+      res.push_back(arr[Qi.front()]);
+      return res;
+    }
   };
+
   struct SMN
   {
     //Sliding-Window-Minimum
+    vector<ll> minimum(vector<ll> arr, ll k)
+    {
+      deque<ll> Qi(k);
+      vector<ll> res;
+      ll i;
+      for(i = 0; i < k; i++)
+      {
+        while(!Qi.empty() && arr[i] <= arr[Qi.back()])
+        {
+          Qi.pop_back();
+        }
+        Qi.push_back(i);
+      }
+      for(; i < arr.size(); i++)
+      {
+        res.push_back(arr[Qi.front()]);
+        while(!Qi.empty() && Qi.front() >= i - k)
+        {
+          Qi.pop_back();
+        }
+        while(Qi.empty() && arr[i] <= arr[Qi.back()])
+        {
+          Qi.pop_back();
+        }
+        Qi.push_back(i);
+      }
+      res.push_back(arr[Qi.front()]);
+      return res;
+    }
   };
+
   struct SMD
   {
     //Sliding-Window-Median
+    multiset<ld> arr;
+    void insert(ld x)
+    {
+      arr.insert(x);
+    }
+
+    void delet(ld x)
+    {
+      arr.erase(arr.find(x));
+    }
+
+    ld getMedian()
+    {
+      ll n = arr.size();
+      ld a = *next(arr.begin(), n / 2 - 1);
+      ld b = *next(arr.begin(), n / 2);
+      if(arr.size() & 1)
+      {
+        return b;
+      }
+      return (a + b) * 0.5;
+    }
+
+    vector<ld> median(vector<ll>& nums, ll k)
+    {
+      vector<ld> ans;
+      arr.clear();
+      for(ll i = 0; i < k; i++)
+      {
+        insert(nums[i]);
+      }
+      for(ll i = k, j = 0; i < nums.size(); i++,j++)
+      {
+        ans.push_back(getMedian());
+        delet(nums[i]);
+        insert(nums[i]);
+      }
+      ans.push_back(getMedian());
+      return ans;
+    }
   };
+};
+
+struct MTM
+{
+  //Meet-In-The-Middle
 };
 
 struct IGQ
@@ -2509,6 +3111,7 @@ struct IGQ
     stringstream s(q);
     return ans;
   }
+
   ll query(ll x, ll y)
   {
     string q = to_string(x) + " " + to_string(y) + "\n";
@@ -2551,6 +3154,7 @@ struct BTS
     }
     rangeTS(mids + 1, midu - 1, ans, k);
   }
+
   void rangeBS(ll p, ll k, ll l, ll u, ll &ans)
   {
     if (u < l) return;
