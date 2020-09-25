@@ -11,7 +11,7 @@ int main()
     ld r = 0;
     cin >> r;
 
-    ld x = 0, y = r, d = 3 - 2 * r;
+    ld x = 0, y = r, d = 1.25 - r;
 
     //declare all variables before it
     initgraph(&gd,&gm, NULL);
@@ -32,13 +32,13 @@ int main()
       {
         x = x + 1;
         y = y;
-        d = d + 4 * x + 6;
+        d = d + 2 * x + 1;
       }
       else
       {
         x = x + 1;
         y = y - 1;
-        d = d + 4 * x - 4 * y - 10;
+        d = d + 2 * x - 2 * y + 1;
       }
       delay(300);
     }while(x < y);
