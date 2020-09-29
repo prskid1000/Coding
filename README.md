@@ -1,2 +1,2 @@
 # Coding
-A Store for Competitive Coding codes.
+A Store for Competitive Coding Codes.
