@@ -36,90 +36,6 @@ using namespace std::chrono;
 using namespace __gnu_pbds;
 
 
-struct PTF
-{
-  struct DJK
-  {
-    vector<vector<pair<ll, ll>>> adj;
-    void dijkstra(ll s, vector<ll>& d, vector<ll>& p)
-    {
-      ll n = adj.size();
-      d.assign(n, INF);
-      p.assign(n, -1);
-      vector<bool> u(n, false);
-      d[s] = 0;
-      for (ll i = 0; i < n; i++)
-      {
-        ll v = -1;
-        for (ll j = 0; j < n; j++)
-        {
-          if (!u[j] && (v == -1 || d[j] < d[v]))
-          {
-            v = j;
-          }
-        }
-        if (d[v] == INF)
-        {
-          break;
-        }
-        u[v] = true;
-        for (auto edge : adj[v])
-        {
-          ll to = edge.first;
-          ll len = edge.second;
-          if (d[v] + len < d[to])
-          {
-            d[to] = d[v] + len;
-            p[to] = v;
-          }
-        }
-      }
-    }
-    vector<ll> restore_path(ll s, ll t, vector<ll> const& p)
-    {
-      vector<ll> path;
-      for (ll v = t; v != s; v = p[v])
-      {
-          path.push_back(v);
-      }
-      path.push_back(s);
-      reverse(path.begin(), path.end());
-      return path;
-    }
-  };
-
-  struct BMF
-  {
-    vector<ll> bellmanFord(vector<vector<ll>>edge, ll v, ll e, ll s)
-    {
-      vector<ll>dis(v, INF);
-      dis[s] = 0;
-      for(ll i = 0; i < v - 1; i++)
-      {
-        for(ll j = 0; j < e; j++)
-        {
-          if(dis[edge[j][0]] + edge[j][2] < dis[edge[j][1]])
-          {
-            dis[edge[j][1]] = dis[edge[j][0]] + edge[j][2];
-          }
-        }
-      }
-      for(ll i = 0; i < e; i++)
-      {
-        ll x = edge[i][0];
-        ll y = edge[i][1];
-        ll weight = edge[i][2];
-        if (dis[x] != INF && dis[x] + weight < dis[y])
-        {
-          //cout << "Graph contains negative weight cycle\n";
-        }
-      }
-      return dis;
-    }
-  };
-};
-
-
 int main()
 {
    #ifndef ONLINE_JUDGE
@@ -139,6 +55,31 @@ int main()
 
    while( t-- )
     {
+      ll n = 0, k = 0, d = 0, sum = 0, ans = -1;
+      cin >> n >> k;
+
+      vector<ll> v(n, 0);
+
+      fr(i, 0, n, 1) cin >> v[i];
+
+      fr(i, 0, n, 1)
+      {
+        d++;
+        sum += v[i];
+        if(sum < k)
+        {
+          sum = 0;
+          if(ans == -1)ans = d;
+        }
+        else
+        {
+          sum -= k;
+        }
+      }
+
+      if(ans == -1)ans = ceil(sum / k) + d + 1;
+
+      cout << ans << "\n";
 
     }
 
