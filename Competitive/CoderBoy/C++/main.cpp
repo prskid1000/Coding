@@ -55,32 +55,17 @@ int main()
 
    while( t-- )
     {
-      ll n = 0, k = 0, d = 0, sum = 0, ans = -1;
-      cin >> n >> k;
+      ll n,x,y, f = 0;
+      cin >> n >> k >> x >> y;
 
-      vector<ll> v(n, 0);
-
-      fr(i, 0, n, 1) cin >> v[i];
-
-      fr(i, 0, n, 1)
+      fr(i, 0, n * k, 1)
       {
-        d++;
-        sum += v[i];
-        if(sum < k)
-        {
-          sum = 0;
-          if(ans == -1)ans = d;
-        }
-        else
-        {
-          sum -= k;
-        }
+        if(x == y) f = 1;
+        x = (x + k) % n;
       }
 
-      if(ans == -1)ans = ceil(sum / k) + d + 1;
-
-      cout << ans << "\n";
-
+      if(f == 1) cout << "YES\n";
+      else cout << "NO\n";
     }
 
    #ifndef ONLINE_JUDGE

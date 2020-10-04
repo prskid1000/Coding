@@ -1,4 +1,4 @@
-6
-51
+YES
+NO
 ------------------------
 Time taken: 1 seconds
