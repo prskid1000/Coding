@@ -1,9 +1,19 @@
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+
+#define ordered_set tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
+//member functions :
+//1. order_of_key(k) : number of elements strictly lesser than k
+//2. find_by_order(k) : k-th element in the set
 
 #define ld long double
 #define ll long long int
 
 //Constant declarations
+#define R 1000000007
+#define M 998244353
+#define L 256
 #define INF 1000000000000000000LL
 
 //IO modifiers
@@ -23,12 +33,8 @@
 //namespace declarations
 using namespace std;
 using namespace std::chrono;
+using namespace __gnu_pbds;
 
-string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ")
-{
-    str.erase(str.find_last_not_of(chars) + 1);
-    return str;
-}
 
 int main()
 {
@@ -49,40 +55,32 @@ int main()
 
    while( t-- )
     {
-      ll n = 0;
-      cin >> n;
+      ll n = 0, k = 0, d = 0, sum = 0, ans = -1;
+      cin >> n >> k;
 
-      bitset<32>bt1(n);
-      string s = "2 3 1 ";
+      vector<ll> v(n, 0);
 
-      if(bt1.count() == 1 || n == 1)
+      fr(i, 0, n, 1) cin >> v[i];
+
+      fr(i, 0, n, 1)
       {
-        s = n == 1 ? "1" : "-1";
-        cout << s << "\n";
-      }
-
-      else if(n > 3)
-      {
-        cout << s;
-        fr(i, 4, n + 1, 1)
+        d++;
+        sum += v[i];
+        if(sum < k)
         {
-          bitset<32>bt(i);
-          if(bt.count() == 1)
-          {
-            cout << (i + 1) << " " << i << " ";
-            i++;
-          }
-          else
-          {
-            cout << i << " ";
-          }
+          sum = 0;
+          if(ans == -1)ans = d;
         }
-        cout << "\n";
+        else
+        {
+          sum -= k;
+        }
       }
-      else
-      {
-        cout << s << "\n";
-      }
+
+      if(ans == -1)ans = ceil(sum / k) + d + 1;
+
+      cout << ans << "\n";
+
     }
 
    #ifndef ONLINE_JUDGE
