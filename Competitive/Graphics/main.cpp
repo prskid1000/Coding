@@ -1,5 +1,6 @@
 #include<bits/stdc++.h>
 #include<graphics.h>
+#include<conio.h>
 #define ll long long int
 #define ld long double
 using namespace std;
@@ -45,6 +46,6 @@ int main()
 
     //draw ends
     getche();
-    closegraph();
+    cout << "hi";
     return 0;
 }
