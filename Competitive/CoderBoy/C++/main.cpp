@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <graphics.h>
 
 #define ld long double
 #define ll long long int
@@ -30,7 +29,6 @@ int main()
    #endif
 
    ll t = 1, i = 0, j = 0, k = 0;
-   //init();
    cin >> t;
 
    //common computation
@@ -38,7 +36,7 @@ int main()
 
    while( t-- )
     {
-
+      
     }
    //fflush(stdout);
   return 0;
