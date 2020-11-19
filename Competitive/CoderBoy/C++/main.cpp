@@ -2,7 +2,7 @@
 #define ld long double
 #define ll long long int
 //Constant declarations
-#define INF 2147483647
+#define INF 1000000000000000000LL
 //IO modifiers
 #define fast ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
 #define io1 std::ifstream in("in.txt");std::cin.rdbuf(in.rdbuf());
@@ -17,31 +17,40 @@
 using namespace std;
 using namespace std::chrono;
 
-void recur_solve(vector<int> v, int i, int j, int si, int sj ,int s, int &c, vector<vector<int>> &mp)
+int check(vector<int> A, int mid, int k)
 {
-  if(si == (s - si - sj) && sj == (s - si - sj))
+  int count = 0, n = A.size();
+  int sum = 0;
+  for(int i = 0; i < n; i++)
   {
-    if(mp[i][j] == 0)
+    if(sum + A[i] >= mid)
     {
-      mp[i][j] = 1;
-      c++;
+      count++;
+      sum = 0;
     }
+
+    sum += A[i];
   }
-  
-  if(j <= i)return;
-  recur_solve(v, i + 1, j - 1, si + v[i], sj + v[j] , s, c, mp);
-  recur_solve(v, i, j - 1, si, sj + v[j] , s, c, mp);
-  recur_solve(v, i + 1, j, si + v[i], sj, s, c, mp);
+  if(count == k) return 1;
+  else return 0;
 }
 
-int solve(vector<int> v)
+int solve(int a[], int n)
 {
-  int n = v.size();
-  vector<vector<int>> mp(n, vector<int>(n, 0));
-  int c = 0, s = 0;
-  for(int i = 0; i < n; i++) s += v[i];
-  recur_solve(v, 1, n - 2, v[0], v[n - 1], s, c, mp);
-  return c;
+    int psum{}, sum{};
+
+    for(int i = 0; i < n; i++)
+    {
+        sum += a[i];
+    }
+
+    for(int i = 0; i < n; i++)
+    {
+        if(psum == sum - psum - a[i]) return i + 1;
+        psum += a[i];
+    }
+
+    return -1;
 }
 
 int main()
@@ -64,11 +73,9 @@ int main()
     {
       int n = 0;
       cin >> n;
-
-      vector<int> v(n, 0);
+      int v[n]{};
       for(int i = 0; i < n; i++) cin >> v[i];
-      cout << solve(v) << "\n";
-
+      cout << solve(v, n) << "\n";
     }
 
    #ifndef ONLINE_JUDGE
