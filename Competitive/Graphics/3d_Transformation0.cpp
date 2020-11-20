@@ -112,8 +112,6 @@ void rotation()
 
 int main()
 {
-  translation();
   rotation();
-  scaling();
   return 0;
 }
