@@ -34,7 +34,7 @@ int main(){
 	int gd=DETECT,gm;
   detectgraph(&gd,&gm);
   initgraph(&gd,&gm,NULL);
-	
+
  	cout<<"Solar System with Circle Md Pt 32";
  	//sun
  	for(int i=0;i<40;i++){

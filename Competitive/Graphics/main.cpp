@@ -1,149 +1,119 @@
 #include<bits/stdc++.h>
 #include<graphics.h>
-#define ll long long int
-#define ld long double
 using namespace std;
-
-void tranlate(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float tx, float ty, float tz)
-{
-  float mat[3][3] = {{1, 0, 0, tx},{0, 1, 0, ty},{0, 0, 1, tz},{0, 0, 0, 1}};
-  float pt[2][4] = {{x1, y1, z1, 1},{x2, y2, z2, 1}};
-  float npt[2][4] = {{0, 0, 0, 0},{0, 0, 0, 0}};
-
-  for(int k = 0; k < 2; k++)
-  {
-    for(int i = 0; i < 4; i++)
-    {
-      for(int j = 0; j < 4; j++)
-      {
-        npt[k][i] += mat[i][j] * pt[k][j];
-      }
-    }
-  }
-
-  bar3d(100 + pt[0][0], 100 + pt[0][1], 100 + pt[0][2], 100 + pt[0][3], 100 + pt[1][0], 100 + pt[1][1], 100 + pt[1][2], 100 + pt[1][3], 1);
-  bar3d(100 + npt[0][0], 100 + npt[0][1], 100 + npt[0][2], 100 + npt[0][3], 100 + npt[1][0], 100 + npt[1][1], 100 + npt[1][2], 100 + npt[1][3], 1);
-
+void boundaryfill(int x,int y,int boundarycolor,int newcolor){
+	if(getpixel(x,y)==boundarycolor || getpixel(x,y)==newcolor) return;
+	putpixel(x,y,newcolor);
+	boundaryfill(x+1,y,boundarycolor,newcolor);
+	boundaryfill(x-1,y,boundarycolor,newcolor);
+	boundaryfill(x,y+1,boundarycolor,newcolor);
+	boundaryfill(x,y-1,boundarycolor,newcolor);
 }
-
-void rotate(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float ang)
-{
-  float a = (3.14 * ang) / 180;
-  float mat[3][3] = {{cos(a), -sin(a), 0}, {sin(a), cos(a), 0}, {0, 0, 1}};
-  float pt[3][3] = {{x1, y1, 1},{x2, y2, 1},{x3, y3, 1}};
-  float npt[3][3] = {{0, 0, 0},{0, 0, 0},{0, 0, 0}};
-
-  for(int k = 0; k < 3; k++)
-  {
-    for(int i = 0; i < 3; i++)
-    {
-      for(int j = 0; j < 3; j++)
-      {
-        npt[k][i] += mat[i][j] * pt[k][j];
-      }
-    }
-  }
-
-  for(int i = 0; i < 3; i++)
-  {
-    line(100 + pt[i][0], 100 + pt[i][1], 100 + pt[(i + 1) % 3][0], 100 + pt[(i + 1) % 3][1]);
-  }
-
-  for(int i = 0; i < 3; i++)
-  {
-    line(300 + npt[i][0], 300 + npt[i][1], 300 + npt[(i + 1) % 3][0], 300 + npt[(i + 1) % 3][1]);
-  }
-
+void background(){
+    int x1=20,x2=600;
+	for(int i=20;i<600;i++){
+		int y1,y2;
+		y1=y2=i;
+		int dx=x2-x1;
+		int dy=y2-y1;
+		int steps;
+		if(abs(dx)>abs(dy)) steps = abs(dx);
+		else steps = abs(dy);
+		int xinc = dx/steps;
+		int yinc = dy/steps;
+		int x=0,y=i;
+		x+=xinc;
+		y+=yinc;
+		for(int i=0;i<steps;i++){
+			putpixel(x,y,WHITE);
+		  //delay(1);
+			x+=xinc;
+			y+=yinc;
+		}
+	}
 }
-
-void scale(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float sx, float sy, float sz)
-{
-  float mat[3][3] = {{sx, 0, 0},{0, sy, 0},{0, 0, 1}};
-  float pt[3][3] = {{x1, y1, 1},{x2, y2, 1},{x3, y3, 1}};
-  float npt[3][3] = {{0, 0, 0},{0, 0, 0},{0, 0, 0}};
-
-  for(int k = 0; k < 3; k++)
-  {
-    for(int i = 0; i < 3; i++)
-    {
-      for(int j = 0; j < 3; j++)
-      {
-        npt[k][i] += mat[i][j] * pt[k][j];
-      }
-    }
-  }
-
-  for(int i = 0; i < 3; i++)
-  {
-    line(200 + pt[i][0], 200 + pt[i][1], 200 + pt[(i + 1) % 3][0], 200 + pt[(i + 1) % 3][1]);
-  }
-
-  for(int i = 0; i < 3; i++)
-  {
-    cout << 100 + npt[i][0] << " " << 100 + npt[i][1] << " " << 100 + npt[(i + 1) % 3][0] << " " << 100 + npt[(i + 1) % 3][1] << "\n";
-    line(300 + npt[i][0], 300 + npt[i][1], 300 + npt[(i + 1) % 3][0], 300 + npt[(i + 1) % 3][1]);
-  }
-
+void ellipsehere(float rx,float ry,int e,int f,int color){
+	float x=0,y=ry;
+	float d1=(ry*ry) - (rx*rx*ry) + (0.25*rx*rx);
+	float dy =2*rx*rx*y, dx=2*ry*ry*x;
+	do{
+		putpixel(e+x,y+f,color);
+		putpixel(e-x,y+f,color);
+		putpixel(e+x,f-y,color);
+		putpixel(e-x,f-y,color);
+		if(d1<0){
+			x=x+1;
+			dx+=2*ry*ry;
+			d1=d1+dx+ry*ry;
+		}
+		else{
+			x=x+1;
+			y=y-1;
+			dx+=2*ry*ry;
+			dy-=2*rx*rx;
+			d1=d1+dx-dy+ry*ry;
+		}
+	} while(dx<dy);
+	float d2=  ((ry * ry) * ((x + 0.5) * (x + 0.5))) +  ((rx * rx) * ((y - 1) * (y - 1))) - (rx * rx * ry * ry);
+		do{
+		putpixel(e+x,y+f,color);
+		putpixel(e-x,y+f,color);
+		putpixel(e+x,-y+f,color);
+		putpixel(e-x,-y+f,color);
+		if(d2>0){
+			y=y-1;
+			dy-=2*rx*rx;
+			d2=d2-dy+rx*rx;
+		}
+		else{
+			x=x+1;
+			y=y-1;
+			dx+=2*ry*ry;
+			dy-=2*rx*rx;
+			d2=d2+dx-dy+rx*rx;
+		}
+	} while(y>0);
 }
-
-
-int main()
-{
-    int gd = DETECT, gm, tmp = 0;
-
-    cout << "Enter the points = " << "\n";
-    float x1, y1, z1, x2, y2, z2, x3, y3, z3, sx, sy, sz, tx, ty, tz,ang;
-    cin >> x1 >> y1 >> x2 >> y2 >> x3 >> y3;
-
-    int ch = 0;
-    cout << "Enter:" << "\n";
-    cout << "1: Scaling" << "\n";
-    cout << "2: Rotation" << "\n";
-    cout << "3: Translation" << "\n";
-    cin >> ch;
-
-    switch(ch)
+void circlehe(int r,int e,int f,int c){
+	 int x=0,y;
+    float d;
+    y = r ; d = 1.5 -r;
+    do
     {
-      case 1:
-      cin >> sx >> sy >> sz;
-      break;
-
-      case 2:
-      cin >> ang;
-      break;
-
-      case 3:
-      cin >> tx >> ty >> tz;
-      break;
-
-      default:
-      cout << "Invalid Choice\n";
-    }
-
-    //declare all variables before it
-    initgraph(&gd,&gm, NULL);
-    //draw here
-
-    switch(ch)
-    {
-      case 1:
-      scale(x1, y1, z1, x2, y2, z2, x3, y3, z3, sx, sy, sz);
-      break;
-
-      case 2:
-      rotate(x1, y1, z1, x2, y2, z2, x3, y3, z3, ang);
-      break;
-
-      case 3:
-      tranlate(x1, y1, z1, x2, y2, z2, x3, y3, z3, tx, ty, tz);
-      break;
-
-      default:
-      cout << "";
-    }
-
-    //draw ends
-    getche();
-    closegraph();
-    return 0;
+        putpixel(e+x,f+y,c);
+        putpixel(e+x,f-y,c);
+        putpixel(e-x,f+y,c);
+        putpixel(e-x,f-y,c);
+        putpixel(e+y,f+x,c);
+        putpixel(e+y,f-x,c);
+        putpixel(e-y,f+x,c);
+        putpixel(e-y,f-x,c);
+        if(d<0)
+        {
+            x++;
+            y= y;
+            d= d+2*x+2;
+		}
+        else
+        {
+            x++;
+            y--;
+            d = d+2*x-2*y+1;
+        }
+	}while(x<y);
+}
+int main(){
+	int gd=DETECT,gm;
+  detectgraph(&gd,&gm);
+  initgraph(&gd,&gm,NULL);
+	background();
+	circlehe(60,100,100,BLACK);
+	boundaryfill(80,80,BLACK,BLACK);
+	circlehe(60,300,100,BLACK);
+	boundaryfill(280,80,BLACK,BLACK);
+	circlehe(120,200,200,BLACK);
+	boundaryfill(180,180,BLACK,BLACK);
+	delay(100);
+	getch();
+	return 0;
 }
