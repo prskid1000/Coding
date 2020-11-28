@@ -1,86 +1,185 @@
-#include <bits/stdc++.h>
-#define ld long double
-#define ll long long int
-//Constant declarations
-#define INF 1000000000000000000LL
-//IO modifiers
-#define fast ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
-#define io1 std::ifstream in("in.txt");std::cin.rdbuf(in.rdbuf());
-#define io2 std::ofstream out("out.txt");std::cout.rdbuf(out.rdbuf());
-//Time Counter
-#define time1 auto start = high_resolution_clock::now();
-#define time2  auto stop = high_resolution_clock::now(); auto duration = duration_cast<microseconds>(stop - start); cout << "------------------------\n" << "Time taken: " << ceil(duration.count() / 1000000.0) << " seconds" << "\n";
-//For outer loop
-#define fr(i, start, stop, increment) for(i = start; i < stop; i += increment)
-#define dfr(i, start, stop ,decrement) for( i = start; i >= stop; i -= decrement)
-//namespace declarations
+#include <iostream>
+#include <stack>
+#include <cstring>
 using namespace std;
-using namespace std::chrono;
 
-int check(vector<int> A, int mid, int k)
+bool isOperator(char x)
 {
-  int count = 0, n = A.size();
-  int sum = 0;
-  for(int i = 0; i < n; i++)
-  {
-    if(sum + A[i] >= mid)
+    switch (x)
     {
-      count++;
-      sum = 0;
-    }
+    	case '+':
 
-    sum += A[i];
-  }
-  if(count == k) return 1;
-  else return 0;
+        case '-':
+
+        case '/':
+
+        case '*':
+
+        return true;
+    }
+    return false;
 }
 
-int solve(int a[], int n)
+string preToPost(string pre_exp)
 {
-    int psum{}, sum{};
+    stack<string> s;
 
-    for(int i = 0; i < n; i++)
+    int length = pre_exp.size();
+
+    for (int i = length - 1; i >= 0; i--)
+
     {
-        sum += a[i];
-    }
+        if (isOperator(pre_exp[i]))
 
-    for(int i = 0; i < n; i++)
-    {
-        if(psum == sum - psum - a[i]) return i + 1;
-        psum += a[i];
-    }
+        {
+            string op1 = s.top();
 
-    return -1;
+            s.pop();
+
+            string op2 = s.top();
+
+            s.pop();
+
+            string temp = op1 + op2 + pre_exp[i];
+
+            s.push(temp);
+        }
+
+        else {
+
+            s.push(string(1, pre_exp[i]));
+        }
+
+    }
+    return s.top();
+}
+
+class Stack
+{
+
+    public:
+
+    int top;
+
+    unsigned capacity;
+
+    int* array;
+};
+
+Stack* createStack( unsigned capacity )
+{
+
+    Stack* stack = new Stack();
+
+
+
+    if (!stack) return NULL;
+
+
+
+    stack->top = -1;
+
+    stack->capacity = capacity;
+
+    stack->array = new int[(stack->capacity * sizeof(int))];
+
+
+
+    if (!stack->array) return NULL;
+
+
+
+    return stack;
+}
+
+
+
+int isEmpty(Stack* stack)
+{
+
+    return stack->top == -1 ;
+}
+
+
+
+int peek(Stack* stack)
+{
+
+    return stack->array[stack->top];
+}
+
+
+
+int pop(Stack* stack)
+{
+
+    if (!isEmpty(stack))
+
+        return stack->array[stack->top--] ;
+
+    return '$';
+}
+
+
+
+void push(Stack* stack,int op)
+{
+
+    stack->array[++stack->top] = op;
+}
+
+int evaluatePostfix(char* exp)
+{
+
+  struct Stack* stack = createStack(strlen(exp));
+ int i;
+
+ // See if stack was created successfully
+ if (!stack) return -1;
+
+ // Scan all characters one by one
+ for (i = 0; exp[i]; ++i)
+ {
+     // If the scanned character is an operand (number here),
+     // push it to the stack.
+     if (isdigit(exp[i]))
+         push(stack, exp[i] - '0');
+
+     // If the scanned character is an operator, pop two
+     // elements from stack apply the operator
+     else
+     {
+         int val1 = pop(stack);
+         int val2 = pop(stack);
+         switch (exp[i])
+         {
+         case '+': push(stack, val2 + val1); break;
+         case '-': push(stack, val2 - val1); break;
+         case '*': push(stack, val2 * val1); break;
+         case '/': push(stack, val2/val1); break;
+         }
+     }
+ }
+ return pop(stack);  
 }
 
 int main()
 {
-   #ifndef ONLINE_JUDGE
-   time1
-   io1 io2
-   #endif
-   #ifdef ONLINE_JUDGE
-   fast
-   #endif
 
-   ll t = 1, i = 0, j = 0, k = 0;
-   //cin >> t;
+    string pre_exp = "";
+    cin >> pre_exp;
 
-   //common computation
-   //common computation
+    cout << "Postfix : " << preToPost(pre_exp) << "\n";
 
-   while( t-- )
+    const string res = preToPost(pre_exp);
+    char exp[res.length()];
+
+    for(int i = 0; i < res.length(); i++)
     {
-      int n = 0;
-      cin >> n;
-      int v[n]{};
-      for(int i = 0; i < n; i++) cin >> v[i];
-      cout << solve(v, n) << "\n";
+    	exp[i] = res[i];
     }
 
-   #ifndef ONLINE_JUDGE
-   time2
-   #endif
-   //fflush(stdout);
-  return 0;
+    cout << evaluatePostfix(exp) << "\n";
+
+    return 0;
 }
