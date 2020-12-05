@@ -17,9 +17,18 @@
 using namespace std;
 using namespace std::chrono;
 
-int solve(int a[], int n)
-{
+map<int, int>mp;
 
+int fibo(int n)
+{
+  if(n == 1 || n == 0) return n;
+  if(mp[n] != 0) return mp[n];
+  else
+  {
+    int tmp = (fibo(n - 1) + fibo(n - 2));
+    mp[n] = tmp;
+    return mp[n];
+  }
 }
 
 int main()
@@ -39,9 +48,7 @@ int main()
     {
       int n = 0;
       cin >> n;
-      int v[n]{};
-      for(int i = 0; i < n; i++) cin >> v[i];
-      cout << solve(v, n) << "\n";
+      cout << fibo(n) << "\n";
     }
 
    #ifndef ONLINE_JUDGE
