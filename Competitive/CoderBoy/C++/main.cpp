@@ -17,18 +17,27 @@
 using namespace std;
 using namespace std::chrono;
 
-map<int, int>mp;
+vector<vector<int>> mp( 1000 , vector<int> (1000, - 1));
 
-int fibo(int n)
+int DP(vector<vector<int>> &A, int i, int j, int p, int mn)
 {
-  if(n == 1 || n == 0) return n;
-  if(mp[n] != 0) return mp[n];
-  else
-  {
-    int tmp = (fibo(n - 1) + fibo(n - 2));
-    mp[n] = tmp;
-    return mp[n];
-  }
+  int n = A.size();
+  int m = A[0].size();
+
+  if(i == n - 1 && j == m - 1) return min(mn,p + A[i][j]);
+  if(mp[i][j] != -1) return mp[i][j];
+
+  int b = INT_MIN, c = INT_MIN;
+  int tmn = min(p + A[i][j], mn);
+
+  if(j + 1 < m) b = DP(A, i , j + 1, p + A[i][j], tmn);
+  if(i + 1 < n) c = DP(A, i + 1, j, p + A[i][j], tmn);
+  mp[i][j] = max(b, c);
+  return mp[i][j];
+}
+int solve(vector<vector<int>> &A)
+{
+  return DP(A, 0, 0, 0, INT_MAX);
 }
 
 int main()
@@ -46,9 +55,18 @@ int main()
 
    while( t-- )
     {
-      int n = 0;
-      cin >> n;
-      cout << fibo(n) << "\n";
+      int n = 0, m = 0;
+      cin >> n >> m;
+      vector<vector<int>> v(n, vector<int>(m, 0));
+      for(int i = 0; i < n; i++)
+      {
+        for(int j = 0; j < m; j++)
+        {
+          cin >> v[i][j];
+        }
+      }
+
+      cout << solve(v) << "\n";
     }
 
    #ifndef ONLINE_JUDGE
