@@ -37,6 +37,19 @@ int main()
       vector<int> v(n);
       for(int i = 0; i < n; i++) cin >> v[i];
 
+      for(int j = n - 1; j >= 1; j--)
+      {
+        if(v[j - 1] < v[j])
+        {
+          sort(v.begin() + j, v.end());
+          int p = upper_bound(v.begin() + j, v.end(), v[j - 1]) - v.begin();
+          int t = v[p];
+          v[p] = v[j - 1];
+          v[j - 1] = t;
+          break;
+        }
+      }
+
       for(int i = 0; i < n; i++) cout << v[i] << " ";
       cout << "\n";
     }
