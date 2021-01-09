@@ -33,61 +33,26 @@ int main()
    while( t-- )
     {
       int n = 0, m = 0, j = 0;
-      cin >> n >> k;
+      cin >> n;
       vector<int> v(n);
       for(int i = 0; i < n; i++) cin >> v[i];
 
-      vector<int> candidate(k, -1);
-      vector<int> count(k, 0);
+      int max_so_far = v[0];
+      int min_so_far = v[0];
+      int max_prod = v[0];
 
       for(int i = 0; i < n; i++)
       {
-        bool flag_1 = false, flag_2 = false;
+        int temp = max_so_far;
+        max_so_far = max(v[i], max(v[i] * temp, v[i] * min_so_far));
+        min_so_far = min(v[i], min(v[i] * temp, v[i] * min_so_far));
 
-        for(int j = 0; j < k; j++)
-        {
-          if(candidate[j] == v[i])
-          {
-            flag_1 = true;
-            count[j]++;
-            break;
-          }
-        }
-
-        if(flag_1 == false)
-        for(int j = 0; j < k; j++)
-        {
-          if(count[j] <= 0)
-          {
-            flag_2 = true;
-            count[j]++;
-            candidate[j] = v[i];
-            break;
-          }
-        }
-
-        if(flag_2 == false)
-        for(int j = 0; j < n; j++) count[j]--;
-
+        max_prod = max(max_prod, max_so_far);
       }
 
-      for(int i = 0; i < k; i++)
-      {
-        int count = 0;
-        for(int j = 0; j < n; j++)
-        {
-          if(candidate[i] == v[i]) count++;
-        }
+      cout << max_prod << "\n";
 
-        if(count >= n / k)
-        {
-          cout << candidate[i] << "\n";
-          i = k;
-          break;
-        }
-      }
-
-      for(int i = 0; i < k; i++) cout << candidate[i] << " ";
+      for(int i = 0; i < n; i++) cout << v[i] << " ";
       cout << "\n";
     }
 
