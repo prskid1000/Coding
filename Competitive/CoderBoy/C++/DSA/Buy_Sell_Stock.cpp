@@ -37,18 +37,24 @@ int main()
       vector<int> v(n);
       for(int i = 0; i < n; i++) cin >> v[i];
 
-      unordered_map<int,int> mp;
-      int sum = 0;
-      int flag = 0;
+      set<int> minima;
+      set<int> maxima;
 
-      for(int i = 0; i < n; i++)
+      while(i < n - 1)
       {
-        sum += v[i];
-        mp[sum]++;
-        if(mp[sum] > 1 || sum == 0) flag = 1;
+        while(i < n - 1 && v[i] >= v[i + 1]) i++;
+        if(i == n - 1) break;
+        minima.insert(i++);
+
+        while(i < n && v[i] >= v[i - 1]) i++;
+        maxima.insert(i - 1);
       }
 
-      if(f == 1) cout << "Zero sum subarray present\n";
+      for(auto i : minima) cout << i << " ";
+      cout << "\n";
+
+      for(auto i : maxima) cout << i << " ";
+      cout << "\n";
 
       for(int i = 0; i < n; i++) cout << v[i] << " ";
       cout << "\n";

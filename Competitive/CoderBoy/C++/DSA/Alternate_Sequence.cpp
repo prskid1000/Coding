@@ -37,18 +37,30 @@ int main()
       vector<int> v(n);
       for(int i = 0; i < n; i++) cin >> v[i];
 
-      unordered_map<int,int> mp;
-      int sum = 0;
-      int flag = 0;
-
-      for(int i = 0; i < n; i++)
+      int low = 0, high = n - 1;
+      while(low < high)
       {
-        sum += v[i];
-        mp[sum]++;
-        if(mp[sum] > 1 || sum == 0) flag = 1;
+        while(v[low] < 0) low ++;
+        while(v[high] >= 0) high--;
+
+        if(low < high)
+        {
+          int t = v[low];
+          v[low] = v[high];
+          v[high] = t;
+          low++;
+          high--;
+        }
       }
 
-      if(f == 1) cout << "Zero sum subarray present\n";
+      int k = n - 1;
+
+      for(int i = 0; i < n; i += 2)
+      {
+        int t = v[i];
+        v[i] = v[k];
+        v[k--] = t;
+      }
 
       for(int i = 0; i < n; i++) cout << v[i] << " ";
       cout << "\n";
