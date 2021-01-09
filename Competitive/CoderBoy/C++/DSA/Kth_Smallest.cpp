@@ -17,6 +17,47 @@
 using namespace std;
 using namespace std::chrono;
 
+void swap(int &a, int &b)
+{
+  int t = a;
+  a = b;
+  b = t;
+}
+
+int partition(vector<int> &v, int i, int j)
+{
+  int low = i + 1;
+  int high = j;
+  while(low <= high)
+  {
+    while(v[i] >= v[low]) low++;
+    while(v[i] < v[high]) high--;
+
+    if(low < high)
+    {
+      swap(v[low], v[high]);
+      low++;
+      high--;
+    }
+  }
+  swap(v[i], v[high]);
+  //for(int i = 0; i < v.size(); i++) cout << v[i] << " ";
+  //cout << "\n";
+  return high;
+}
+
+int kth(vector<int>&v, int l, int r, int k)
+{
+  if(l < r)
+  {
+    int q = partition(v, l, r);
+    //cout << q << "\n";
+    if(q == k - 1) return v[q];
+    if(q > k - 1) return kth(v, l, q - 1, k);
+    else return kth(v, q + 1, r, k - q - 1);
+  }
+  return -1;
+}
 int main()
 {
    #ifndef ONLINE_JUDGE
@@ -32,59 +73,13 @@ int main()
 
    while( t-- )
     {
-      int n = 0, m = 0;
-      cin >> n >> m;
-      vector<int> a(n);
-      vector<int> b(m);
-      for(int i = 0; i < n; i++) cin >> a[i];
-      for(int i = 0; i < m; i++) cin >> b[i];
+      int n = 0;
+      cin >> n;
+      vector<int> v(n);
+      for(int i = 0; i < n; i++) cin >> v[i];
 
-      int gap = (n + m) / 2;
-
-      for(int i = 0,j = 0; gap >= 1; gap /= 2)
-      {
-
-        for(i = 0; i + gap < n; i++)
-        {
-          if(a[i] > a[i + gap])
-          {
-            int t = a[i];
-            a[i] = a[i + gap];
-            a[i + gap] = t;
-          }
-        }
-
-        for(j = gap > n ? gap - n : 0; i < n && j < m; i++, j++)
-        {
-          //cout << b[j] << "\n";
-          if(a[i] > b[j])
-          {
-            int t = a[i];
-            a[i] = b[j];
-            b[j] = t;
-          }
-        }
-
-        if(j < m)
-        {
-          for(j = 0; j + gap < m; j++)
-          {
-            if(b[j] > b[j + gap])
-            {
-              if(b[i] > b[j])
-              {
-                int t = b[i];
-                b[i] = b[j];
-                b[j] = t;
-              }
-            }
-          }
-        }
-      }
-
-      for(int i = 0; i < n; i++) cout << a[i] << " ";
-      cout << "\n";
-      for(int i = 0; i < m; i++) cout << b[i] << " ";
+      cout << v[kth(v, 0, n, 1)] << "\n";
+      for(int i = 0; i < n; i++) cout << v[i] << " ";
       cout << "\n";
     }
 

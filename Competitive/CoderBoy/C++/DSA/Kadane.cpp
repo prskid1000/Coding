@@ -17,6 +17,15 @@
 using namespace std;
 using namespace std::chrono;
 
+int gcd(int a, int b)
+{
+    if (b == 0)
+        return a;
+
+    else
+        return gcd(b, a % b);
+}
+
 int main()
 {
    #ifndef ONLINE_JUDGE
@@ -32,59 +41,26 @@ int main()
 
    while( t-- )
     {
-      int n = 0, m = 0;
-      cin >> n >> m;
-      vector<int> a(n);
-      vector<int> b(m);
-      for(int i = 0; i < n; i++) cin >> a[i];
-      for(int i = 0; i < m; i++) cin >> b[i];
+      int n = 0;
+      cin >> n >> k;
+      vector<int> v(n);
+      for(int i = 0; i < n; i++) cin >> v[i];
 
-      int gap = (n + m) / 2;
+      int max_sum_so_far = 0, max_ending_here = 0;
 
-      for(int i = 0,j = 0; gap >= 1; gap /= 2)
+      for(int i = 0; i < n; i++)
       {
+        max_ending_here = v[i] + max_ending_here;
 
-        for(i = 0; i + gap < n; i++)
-        {
-          if(a[i] > a[i + gap])
-          {
-            int t = a[i];
-            a[i] = a[i + gap];
-            a[i + gap] = t;
-          }
-        }
+        if(max_ending_here > max_sum_so_far)
+        max_sum_so_far = max_ending_here;
 
-        for(j = gap > n ? gap - n : 0; i < n && j < m; i++, j++)
-        {
-          //cout << b[j] << "\n";
-          if(a[i] > b[j])
-          {
-            int t = a[i];
-            a[i] = b[j];
-            b[j] = t;
-          }
-        }
-
-        if(j < m)
-        {
-          for(j = 0; j + gap < m; j++)
-          {
-            if(b[j] > b[j + gap])
-            {
-              if(b[i] > b[j])
-              {
-                int t = b[i];
-                b[i] = b[j];
-                b[j] = t;
-              }
-            }
-          }
-        }
+        if(max_ending_here < 0) max_ending_here  = 0;
       }
 
-      for(int i = 0; i < n; i++) cout << a[i] << " ";
-      cout << "\n";
-      for(int i = 0; i < m; i++) cout << b[i] << " ";
+      cout << max_sum_so_far << endl;
+
+      for(int i = 0; i < n; i++) cout << v[i] << " ";
       cout << "\n";
     }
 

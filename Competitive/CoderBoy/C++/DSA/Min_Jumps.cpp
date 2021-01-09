@@ -32,59 +32,37 @@ int main()
 
    while( t-- )
     {
-      int n = 0, m = 0;
-      cin >> n >> m;
-      vector<int> a(n);
-      vector<int> b(m);
-      for(int i = 0; i < n; i++) cin >> a[i];
-      for(int i = 0; i < m; i++) cin >> b[i];
+      int n = 0;
+      cin >> n;
+      vector<int> v(n);
+      for(int i = 0; i < n; i++) cin >> v[i];
 
-      int gap = (n + m) / 2;
+      int max_reach = v[0];
+      int jump = 1;
+      int step = v[0];
 
-      for(int i = 0,j = 0; gap >= 1; gap /= 2)
+      for(int i = 0; i < n; i++)
       {
+        if (i == n - 1) break;
+        max_reach = max(max_reach , i + v[i]);
 
-        for(i = 0; i + gap < n; i++)
-        {
-          if(a[i] > a[i + gap])
-          {
-            int t = a[i];
-            a[i] = a[i + gap];
-            a[i + gap] = t;
-          }
-        }
+        step--;
 
-        for(j = gap > n ? gap - n : 0; i < n && j < m; i++, j++)
+        if(step == 0)
         {
-          //cout << b[j] << "\n";
-          if(a[i] > b[j])
+          jump++;
+          if(i >= max_reach)
           {
-            int t = a[i];
-            a[i] = b[j];
-            b[j] = t;
+            cout <<"-1\n";
+            break;
           }
-        }
-
-        if(j < m)
-        {
-          for(j = 0; j + gap < m; j++)
-          {
-            if(b[j] > b[j + gap])
-            {
-              if(b[i] > b[j])
-              {
-                int t = b[i];
-                b[i] = b[j];
-                b[j] = t;
-              }
-            }
-          }
+          step = max_reach - i;
         }
       }
 
-      for(int i = 0; i < n; i++) cout << a[i] << " ";
-      cout << "\n";
-      for(int i = 0; i < m; i++) cout << b[i] << " ";
+      cout << jump << endl;
+
+      for(int i = 0; i < n; i++) cout << v[i] << " ";
       cout << "\n";
     }
 
