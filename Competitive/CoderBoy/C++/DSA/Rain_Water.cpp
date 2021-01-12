@@ -32,29 +32,47 @@ int main()
 
    while( t-- )
     {
-      int n = 0;
+      int n = 0, m = 0, j = 0;
       cin >> n;
+      vector<int> v(n);
+      for(int i = 0; i < n; i++) cin >> v[i];
 
-      vector<vector<int>> mat(n,vector<int>(n, 0));
-      priority_queue <int, vector<int>, greater<int>> mh;
-      
-      for(int i = 0; i < n; i++)
+      int left = 0, right = n - 1;
+      int left_max = 0, right_max = 0;
+      int water = 0;
+
+      while(left < right)
       {
-        for(int j = 0; j < n; j++)
+        if(v[left] < v[right])
         {
-          cin >> mat[i][j];
-          mh.insert(mat[i][j]);
+          if(v[left] < left_max)
+          {
+            water += (left_max - v[left]);
+          }
+          else
+          {
+            left_max = v[left];
+          }
+          left++;
+        }
+        else
+        {
+          if(v[right] < right_max)
+          {
+            water += (right_max - v[left]);
+          }
+          else
+          {
+            right_max = v[right];
+          }
+          right--;
         }
       }
 
-      for(int i = 0; i < n; i++)
-      {
-        for(int j = 0; j < n; j++)
-        {
-          cin >> mat[i][j];
-          mh.insert(mat[i][j]);
-        }
-      }
+      cout << water << "\n";
+
+      for(int i = 0; i < n; i++) cout << v[i] << " ";
+      cout << "\n";
     }
 
    #ifndef ONLINE_JUDGE

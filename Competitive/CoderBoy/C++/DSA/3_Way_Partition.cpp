@@ -32,29 +32,34 @@ int main()
 
    while( t-- )
     {
-      int n = 0;
-      cin >> n;
+      int n = 0, m = 0, j = 0, a = 0, b = 0;
+      cin >> n >> a >> b;
+      vector<int> v(n);
+      for(int i = 0; i < n; i++) cin >> v[i];
 
-      vector<vector<int>> mat(n,vector<int>(n, 0));
-      priority_queue <int, vector<int>, greater<int>> mh;
-      
-      for(int i = 0; i < n; i++)
+      int start = 0, end = n - 1;
+
+      for(int i = 0; i <= end;)
       {
-        for(int j = 0; j < n; j++)
-        {
-          cin >> mat[i][j];
-          mh.insert(mat[i][j]);
-        }
+          if(v[i] < a)
+          {
+              int t = v[i];
+              v[i++] = v[start];
+              v[start++] = t;
+          }
+
+          else if(v[i] > b)
+          {
+              int t = v[i];
+              v[i] = v[end];
+              v[end--] = t;
+          }
+
+          else i++;
       }
 
-      for(int i = 0; i < n; i++)
-      {
-        for(int j = 0; j < n; j++)
-        {
-          cin >> mat[i][j];
-          mh.insert(mat[i][j]);
-        }
-      }
+      for(int i = 0; i < n; i++) cout << v[i] << " ";
+      cout << "\n";
     }
 
    #ifndef ONLINE_JUDGE
