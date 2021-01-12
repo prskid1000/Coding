@@ -1,3 +1,6 @@
-3
+z
+dog
+du
+dov
 ------------------------
 Time taken: 1 seconds
