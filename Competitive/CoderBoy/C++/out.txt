@@ -1,6 +1,5 @@
-z
+i
+am
 dog
-du
-dov
 ------------------------
-Time taken: 1 seconds
+Time taken: 0 seconds

@@ -17,72 +17,6 @@
 using namespace std;
 using namespace std::chrono;
 
-struct node
-{
-  int freq[26] = {0};
-  node *n[26] = {nullptr};
-};
-
-
-void insert(node *root, string s)
-{
-  if(root == nullptr)
-  {
-    root = new node();
-  }
-
-  for(int i = 0; i < s.length(); i++)
-  {
-    int k = s[i] - 'a';
-    root->freq[k]++;
-
-    if(root->n[k] == nullptr)
-    root->n[k] = new node();
-
-    root = root->n[k];
-  }
-}
-
-void remove(node *root, string s)
-{
-  for(int i = 0; i < s.length(); i++)
-  {
-    int k = s[i] - 'a';
-    root->freq[k]--;
-
-    node *tmp = root->n[k];
-    root = root->n[k];
-
-    if(tmp->freq[k] == 0) free(tmp->n[k]);
-  }
-}
-
-string prefix(node *root, string s)
-{
-  string ans = "";
-  for(int i = 0; i < s.length(); i++)
-  {
-    int k = s[i] - 'a';
-    ans += s[i];
-
-    if(root->freq[k] == 1)break;
-
-    root = root->n[k];
-  }
-
-  return ans;
-}
-
-void display(node *root)
-{
-  if(root == nullptr) return;
-
-  for(int i = 0; i < 26; i++) cout << root->freq[i] << " ";
-  cout << "\n";
-
-  for(int i = 0; i < 26; i++) display(root->n[i]);
-}
-
 int main()
 {
    #ifndef ONLINE_JUDGE
@@ -100,22 +34,6 @@ int main()
     {
       int n = 0;
       cin >> n;
-      string s[n];
-
-      node *root = new node();
-
-      for(int i = 0; i < n; i++)
-      {
-        cin >> s[i];
-        insert(root, s[i]);
-      }
-
-      //display(root);
-
-      for(int i = 0; i < n; i++)
-      {
-        cout << prefix(root, s[i]) << "\n";
-      }
 
     }
 

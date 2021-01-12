@@ -1,5 +1,1 @@
-4
-zebra
-dog
-duck
-dove
+5
