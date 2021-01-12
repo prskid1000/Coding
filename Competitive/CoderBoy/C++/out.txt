@@ -1,5 +1,2 @@
-i
-am
-dog
 ------------------------
-Time taken: 0 seconds
+Time taken: 1 seconds
