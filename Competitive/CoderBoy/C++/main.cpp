@@ -17,8 +17,7 @@
 using namespace std;
 using namespace std::chrono;
 
-int heap[100] = {0};
-int size = 0;
+vector<int> heap;
 
 void swap(int *x, int *y)
 {
@@ -27,59 +26,58 @@ void swap(int *x, int *y)
   *y = temp;
 }
 
-void min_heapify(int p)
+void heapify(int p)
 {
-  int smallest = p;
+  int swapper = p;
 
-  if(heap[p] > heap[2 * p + 1])
-  smallest = 2 * p + 1;
+  if(2 * p + 1 < heap.size() && heap[p] > heap[2 * p + 1])
+  swapper = 2 * p + 1;
 
-  if(heap[p] > heap[2 * p + 2])
-  smallest = 2 * p + 2;
+  if(2 * p + 2 < heap.size() && heap[swapper] > heap[2 * p + 2])
+  swapper = 2 * p + 2;
 
-  if(smallest != p)
+  if(swapper != p)
   {
-    swap(&heap[p], &heap[smallest]);
-    min_heapify(smallest);
+    swap(&heap[p], &heap[swapper]);
+    heapify(swapper);
   }
 }
 
 int extractMin()
 {
-    if(size <= 0) return INT_MAX;
-    if(size == 1)
-    {
-      size--;
-      return heap[0];
-    }
-
+    if(heap.size() <= 0) return INT_MAX;
     int root = heap[0];
-    heap[0] = heap[size-1];
-    size--;
-    min_heapify(0);
+    if(heap.size() == 1) heap.clear();
+
+    else
+    {
+      heap[0] = heap[heap.size() - 1];
+      heap.pop_back();
+      heapify(0);
+    }
 
     return root;
 }
 
-void decreaseKey(int i, int v)
+void insertElement(int v)
 {
-    heap[i] = v;
-    while(i != 0 && heap[(i - 1) / 2] > heap[i])
-    {
-       swap(&heap[i], &heap[(i - 1) / 2]);
-       i = (i - 1) / 2;
-    }
+  heap.push_back(v);
+  int i = heap.size() - 1;
+
+  while(i != 0 && heap[(i - 1) / 2] > heap[i])
+  {
+     swap(&heap[i], &heap[(i - 1) / 2]);
+     i = (i - 1) / 2;
+  }
 }
 
-void deleteKey(int p)
+void display()
 {
-  decreaseKey(p, INT_MIN);
-  extractMin();
-}
-
-void insertKey(int k)
-{
-    decreaseKey(size++, k);
+  for(int i = 0; i < heap.size(); i++)
+  {
+    cout << heap[i] << " ";
+  }
+  cout << "\n";
 }
 
 int main()
@@ -103,14 +101,13 @@ int main()
       for( i = 0; i < n; i++)
       {
         cin >> k;
-        insertKey(k);
+        insertElement(k);
         //cout << size << "\n";
       }
 
-      for( i = 0; i < 100; i++)
+      for( i = 0; i < 5; i++)
       {
         cout << extractMin() << "\n";
-
       }
 
     }
