@@ -44,7 +44,7 @@ void min_heapify(int p)
   }
 }
 
-int extract_min()
+int extractMin()
 {
     if(size <= 0) return INT_MAX;
     if(size == 1)
@@ -74,7 +74,7 @@ void decreaseKey(int i, int v)
 void deleteKey(int p)
 {
   decreaseKey(p, INT_MIN);
-  extract_min();
+  extractMin();
 }
 
 void insertKey(int k)
@@ -99,7 +99,20 @@ int main()
     {
       int n = 0;
       cin >> n;
-      
+
+      for( i = 0; i < n; i++)
+      {
+        cin >> k;
+        insertKey(k);
+        //cout << size << "\n";
+      }
+
+      for( i = 0; i < 100; i++)
+      {
+        cout << extractMin() << "\n";
+
+      }
+
     }
 
    #ifndef ONLINE_JUDGE
