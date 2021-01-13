@@ -61,43 +61,35 @@ int main()
       }
 
       priority_queue<int, vector<node>, comp> heap;
-      int mx = INT_MIN, mn = INT_MAX;
       for(int i = 0; i < n; i++)
       {
-        node *m = new node();
-        m->val = v[i][0];
-        m->i = i;
-        m->j = 0;
-        heap.push(*m);
-        mx = max(mx, v[i][0]);
+        node *mn = new node();
+        mn->val = v[i][0];
+        mn->i = i;
+        mn->j = 0;
+        heap.push(*mn);
       }
 
       vector<int>res;
 
-      int p = 0, q = 0;
-
       while(heap.size() != 0)
       {
-        node m = heap.top();
+        node mn = heap.top();
         heap.pop();
-        cout << m.val << "\n";
-        if(mn > mx - m.val + 1)
-        {
-          p = mx;
-          q = m.val;
-          mn = mx - m.val + 1;
-        }
 
-        if(m.j + 1 < v[m.i].size())
+        res.push_back(mn.val);
+        if(mn.j + 1 < v[mn.i].size())
         {
-          m.val = v[m.i][m.j + 1];
-          m.j++;
-          heap.push(m);
-          mx = max(mx, m.val);
+          mn.val = v[mn.i][mn.j + 1];
+          mn.j++;
+          heap.push(mn);
         }
-        else break;
       }
-        cout << q << " " << p << "\n";
+        for(int i = 0; i < res.size(); i++)
+        {
+          cout << res[i] << " ";
+        }
+        cout << "\n";
     }
 
    #ifndef ONLINE_JUDGE
