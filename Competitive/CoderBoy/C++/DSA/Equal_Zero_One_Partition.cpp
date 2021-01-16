@@ -32,7 +32,33 @@ int main()
 
    while( t-- )
     {
-      
+      int n = 0;
+
+      string s = "";
+      cin >> s;
+      n = s.length();
+
+      int tz = 0, to = 0, tzl = 0, tol = 0;
+
+      for(int i = 0; i < n; i++)
+      {
+        if(s[i] == '0')tz++;
+        else to++;
+      }
+
+      int k = -1;
+
+      for(int i = 0; i < n; i++)
+      {
+        if(s[i] == '0') tzl++;
+        else tol++;
+
+        if(tzl == tz - tzl && tol == to - tol)
+        k = i + 1;
+      }
+
+      cout << s.substr(0, k) << " " << s.substr(k) << "\n";
+
     }
 
    #ifndef ONLINE_JUDGE
