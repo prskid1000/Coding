@@ -28,32 +28,11 @@ int main()
    #endif
 
    ll t = 1, i = 0, j = 0, k = 0;
-   cin >> t;
+   //cin >> t;
 
    while( t-- )
     {
-      int n = 0, lim = 0;
-      cin >> n;
-
-      vector<int> v(n + 1, 0);
-      for(int i = 0; i < n; i++) cin >> v[i];
-
-      cin >> lim;
-
-      int line_count = 0, fill = 0, prev = 1;
-
-      for(int i = 0; i < n; i++)
-      {
-        fill += v[i];
-        if(fill + v[i + 1] + 1 >= lim)
-        {
-          cout << prev << " " << i + 1 << " ";
-          prev = i + 2;
-          fill = 0;
-        }
-      }
-
-      cout << "\n";
+      
     }
 
    #ifndef ONLINE_JUDGE
