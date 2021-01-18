@@ -17,62 +17,6 @@
 using namespace std;
 using namespace std::chrono;
 
-struct node
-{
-  int freq[26] = {0};
-  node *n[26] = {nullptr};
-};
-
-
-void insert(node *root, string s)
-{
-  if(root == nullptr)
-  {
-    root = new node();
-  }
-
-  for(int i = 0; i < s.length(); i++)
-  {
-    int k = s[i] - 'a';
-    root->freq[k]++;
-
-    if(root->n[k] == nullptr)
-    root->n[k] = new node();
-
-    root = root->n[k];
-  }
-}
-
-void remove(node *root, string s)
-{
-  for(int i = 0; i < s.length(); i++)
-  {
-    int k = s[i] - 'a';
-    root->freq[k]--;
-
-    node *tmp = root->n[k];
-    root = root->n[k];
-
-    if(tmp->freq[k] == 0) free(tmp->n[k]);
-  }
-}
-
-string prefix(node *root, int n)
-{
-  string ans = "";
-  for(int i = 0; i < 26; i++)
-  {
-    if(root->freq[i] == n)
-    {
-      string next = (char)(i + 'a') + prefix(root->n[i], n);
-      if(next.length() > ans.length())
-      ans = next;
-    }
-  }
-
-  return ans;
-}
-
 int main()
 {
    #ifndef ONLINE_JUDGE
@@ -88,18 +32,7 @@ int main()
 
    while( t-- )
     {
-      int n = 0;
-      cin >> n;
-      node *root = new node();
 
-      for(int i = 0; i < n; i++)
-      {
-        string s = "";
-        cin >> s;
-        insert(root, s);
-      }
-
-      cout << prefix(root, n) << "\n";
     }
 
    #ifndef ONLINE_JUDGE
