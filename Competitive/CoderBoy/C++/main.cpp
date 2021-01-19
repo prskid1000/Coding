@@ -32,6 +32,36 @@ int main()
 
    while( t-- )
     {
+      string pat, str;
+      cin >> str >> pt;
+
+      int n = str.length();
+      int m = pat.length();
+
+      int freq_pat[26] = {0};
+      int freq_temp[26] = {0};
+
+      int len = 0, start = 0;
+
+      for(int i = 0; i < m; i++)
+      {
+        freq_pat[pat[i] - 'a']++;
+      }
+
+
+      for(int i = 0; i < n; i++)
+      {
+        freq_temp[str[i] - 'a']++;
+        len++;
+
+        if(len == pat.length())
+        {
+          for(int j = 0; j < 26; j++)
+          {
+            
+          }
+        }
+      }
 
     }
 
