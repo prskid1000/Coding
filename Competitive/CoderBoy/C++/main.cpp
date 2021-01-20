@@ -32,38 +32,7 @@ int main()
 
    while( t-- )
     {
-      int count = 0, limit = 0;
-      string s;
-      cin >> limit >> s;
-
-      map<char, int> mp;
-
-      bool flag = true;
-
-      for(int i = 0; i < s.length(); i++)
-      {
-        if(mp[s[i]] == 0)
-        {
-          if(count == limit)
-          {
-            flag = false;
-            break;
-          }
-          else
-          {
-            mp[s[i]] = 1;
-            count++;
-          }
-        }
-        else
-        {
-          mp[s[i]] = 0;
-          count--;
-        }
-      }
-
-      if(flag == true) cout << "Yes\n";
-      else cout << "No\n";
+      
     }
 
    #ifndef ONLINE_JUDGE
