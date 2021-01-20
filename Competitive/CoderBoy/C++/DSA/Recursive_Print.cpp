@@ -17,6 +17,18 @@
 using namespace std;
 using namespace std::chrono;
 
+void print(vector<vector<string>> v, int i, int j, string s)
+{
+  if(i == v.size()) cout << s << "\n";
+  else
+  {
+    for(int j = 0; j < v[0].size(); j++)
+    {
+      print(v, i + 1, j, s + " " + v[i][j]);
+    }
+  }
+}
+
 int main()
 {
    #ifndef ONLINE_JUDGE
@@ -32,38 +44,20 @@ int main()
 
    while( t-- )
     {
-      int count = 0, limit = 0;
-      string s;
-      cin >> limit >> s;
+      int n(0), m(0);
+      cin >> n >> m;
+      vector<vector<string>> v(n, vector<string>(m));
 
-      map<char, int> mp;
-
-      bool flag = true;
-
-      for(int i = 0; i < s.length(); i++)
+      for(int i = 0; i < n; i++)
       {
-        if(mp[s[i]] == 0)
+        for(int j = 0; j < m; j++)
         {
-          if(count == limit)
-          {
-            flag = false;
-            break;
-          }
-          else
-          {
-            mp[s[i]] = 1;
-            count++;
-          }
-        }
-        else
-        {
-          mp[s[i]] = 0;
-          count--;
+          cin >> v[i][j];
         }
       }
 
-      if(flag == true) cout << "Yes\n";
-      else cout << "No\n";
+      print(v, 0, 0, "");
+
     }
 
    #ifndef ONLINE_JUDGE

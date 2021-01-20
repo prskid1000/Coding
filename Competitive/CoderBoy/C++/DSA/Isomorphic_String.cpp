@@ -32,38 +32,37 @@ int main()
 
    while( t-- )
     {
-      int count = 0, limit = 0;
-      string s;
-      cin >> limit >> s;
+      string a, b;
+      cin >> a >> b;
+      int n = a.length(), m = b.length();
 
-      map<char, int> mp;
+      map<char, char>mp;
 
+      map<char, int> ca;
+      map<char, int> cb;
       bool flag = true;
 
-      for(int i = 0; i < s.length(); i++)
+      for(int i = 0; i < n; i++)
       {
-        if(mp[s[i]] == 0)
+        if(ca[a[i]] == 0)
         {
-          if(count == limit)
-          {
-            flag = false;
-            break;
-          }
-          else
-          {
-            mp[s[i]] = 1;
-            count++;
-          }
+          mp[a[i]] = b[i];
+          ca[a[i]]++;
+          cb[b[i]]++;
+        }
+        else if(mp[a[i]] == b[i] && ca[a[i]] == cb[b[i]])
+        {
+          ca[a[i]]++;
+          cb[b[i]]++;
         }
         else
         {
-          mp[s[i]] = 0;
-          count--;
+          flag = false;
         }
       }
 
-      if(flag == true) cout << "Yes\n";
-      else cout << "No\n";
+      if(flag == false) cout << "No\n";
+      else cout << "Yes\n";
     }
 
    #ifndef ONLINE_JUDGE
