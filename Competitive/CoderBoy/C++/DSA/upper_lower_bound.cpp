@@ -17,22 +17,44 @@
 using namespace std;
 using namespace std::chrono;
 
-int search(vector<int> v, int t = 0)
+int lower_bound(vector<int> v, int t = 0)
 {
   int ans = -1;
   int low = 0, high = v.size() - 1;
-  while(low < high)
+
+  while(low <= high)
   {
     int mid = low + (high - low) / 2;
-    if(v[mid] == t)
-    {
-      ans = mid;
-    }
-
+    if(v[mid] == t) ans = mid;
     
-  }
+    if(v[mid] < t ) low = mid + 1;
+    else high = mid - 1;
+
+    //cout << v[mid] << " " << high << " " << t << "\n";
+  } 
+
   return ans;
 }
+
+int upper_bound(vector<int> v, int t = 0)
+{
+  int ans = -1;
+  int low = 0, high = v.size() - 1;
+
+  while(low <= high)
+  {
+    int mid = low + (high - low) / 2;
+    if(v[mid] == t) ans = mid;
+    
+    if(v[mid] > t ) high = mid - 1;
+    else low = mid + 1;
+
+   //cout << v[mid] << " " << high << " " << t << "\n";
+  } 
+
+  return ans;
+}
+
 int main()
 {
    #ifndef ONLINE_JUDGE
@@ -57,7 +79,7 @@ int main()
           cin >> v[i];
         }
 
-        cout << search(v, k) << "\n";
+        cout << lower_bound(v, k) << " " << upper_bound(v, k) << "\n";
 
     }
 
