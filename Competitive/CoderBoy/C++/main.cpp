@@ -17,57 +17,6 @@
 using namespace std;
 using namespace std::chrono;
 
-void dfs(vector<vector<char>>& grid,vector<vector<bool>>& v,int i,int j,int n,int m)
-{
-    if( v[i][j]==false)
-    v[i][j]=true;
-
-    if(i+1<n && grid[i+1][j]=='1')
-    dfs(grid,v,i+1,j,n, m);
-
-    if(j+1<m && grid[i][j+1]=='1')
-    dfs(grid,v,i,j+1,n, m);
-
-    if(i-1>=0 && grid[i-1][j]=='1')
-    dfs(grid,v,i-1,j,n, m);
-
-    if(j-1>=0 && grid[i][j-1]=='1')
-    dfs(grid,v,i,j-1,n, m);
-
-    if(i+1<n && j+1<m && grid[i+1][j+1]=='1')
-    dfs(grid,v,i+1,j+1,n, m);
-
-    if(i+1<n &&j-1>=0 && grid[i+1][j-1]=='1')
-    dfs(grid,v,i+1,j-1,n, m);
-
-    if(i-1>=0 && j+1<m && grid[i-1][j+1]=='1')
-    dfs(grid,v,i-1,j+1,n, m);
-
-    if(i-1>=0 && j-1>=0 && grid[i-1][j-1]=='1')
-    dfs(grid,v,i-1,j-1,n, m);
-
-}
-    int numIslands(vector<vector<char>>& grid) {
-        // Code here
-        int n=grid.size(),m=grid[0].size();
-        //cout<<n<<" "<<m<<endl;
-        vector<vector<bool>>v(n,vector<bool>(m,false));
-        int c=0;
-        for(int i=0;i<n;i++)
-        {
-            for(int j=0;j<m;j++)
-            {
-                if( grid[i][j]=='1' && v[i][j]==false )
-                {
-                    c++;
-                    dfs(grid,v,i,j,n,m);
-                }
-            }
-        }
-        
-        return c;
-    }
-
 int main()
 {
    #ifndef ONLINE_JUDGE
@@ -83,17 +32,7 @@ int main()
 
    while( t-- )
     {
-       int n = 0, m = 0;
-       cin >> n >> m;
-       vector<vector<char>> v(n, vector<char>(m, '.'));
-       for(int i = 0; i < n; i++)
-       {
-           for(int j = 0; j < m; j++)
-           {
-               cin >> v[i][j];
-           }
-       }
-
+        
     }
 
    #ifndef ONLINE_JUDGE
