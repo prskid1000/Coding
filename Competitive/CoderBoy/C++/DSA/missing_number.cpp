@@ -34,6 +34,23 @@ int main()
     {
       int n = 0;
       cin >> n;
+
+      vector<int> v(n);
+      for(int i = 0; i < n; i++) cin >> v[i];
+
+      int sum = (n * (n + 1)) / 2;
+      int xo = 0;
+      int asum = 0;
+        
+      for(int i = 0; i < n; i++)
+      {
+        xo ^= v[i];
+        asum += v[i];
+      }
+
+      int a = ((asum - xo) / 2);
+      int b = sum - (a + xo);
+      cout << a << " " << b << "\n";
     }
 
    #ifndef ONLINE_JUDGE

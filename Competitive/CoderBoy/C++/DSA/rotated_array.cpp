@@ -17,6 +17,29 @@
 using namespace std;
 using namespace std::chrono;
 
+int search(vector<int> v, int t = 0)
+{
+  int ans = -1;
+  int low = 0, high = v.size() - 1;
+  while(low <= high)
+  {
+    int mid = low + (high - low) / 2;
+    if(v[mid] == t)
+    {
+      ans = mid;
+    }
+
+    if(v[mid] >= t && v[low] <= t)
+    {
+      high = mid - 1;
+    }
+    else
+    {
+      low = mid + 1;
+    }
+  }
+  return ans;
+}
 int main()
 {
    #ifndef ONLINE_JUDGE
@@ -32,8 +55,17 @@ int main()
 
    while( t-- )
     {
-      int n = 0;
-      cin >> n;
+        int n = 0;
+        cin >> n >> k;
+
+        vector<int > v(n, 0);
+        for(int i = 0; i < n; i++)
+        {
+          cin >> v[i];
+        }
+
+        cout << search(v, k) << "\n";
+
     }
 
    #ifndef ONLINE_JUDGE
