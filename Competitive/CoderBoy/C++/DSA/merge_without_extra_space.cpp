@@ -15,7 +15,33 @@
 #define dfr(i, start, stop ,decrement) for( i = start; i >= stop; i -= decrement)
 //namespace declarations
 using namespace std;
-using namespace std::chrono; 
+using namespace std::chrono;
+
+	void merge(int arr1[], int arr2[], int n, int m) {
+	    
+	    multiset<int> st;
+	    for(int i = 0; i < m; i++)
+	    {
+	        st.insert(arr2[i]);
+	    }
+	    
+	    for(int i = 0; i < n; i++)
+	    {
+	        if(arr1[i] > *st.begin())
+	        {
+	            int temp = arr1[i];
+	            arr1[i] = *st.begin();
+	            st.erase(st.begin());
+	            st.insert(temp);
+	        }
+	    }
+	    
+	    int j = 0;
+	    for(auto i = st.begin(); i != st.end(); i++)
+	    {
+	        arr2[j++] = *i;
+	    }
+	}
 
 int main()
 {
@@ -41,7 +67,7 @@ int main()
       {
         cin >> v[i];
       }
-      
+
     }
 
    #ifndef ONLINE_JUDGE
