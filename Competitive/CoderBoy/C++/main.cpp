@@ -19,9 +19,71 @@ using namespace std::chrono;
 
 struct node
 {
-  int data;
-  node *prev, *next; 
+  char data = 0;
+  node *prev = NULL, *next = NULL; 
 };
+
+node* push(node *head, char k)
+{
+  if(head == NULL)
+  {
+      head = new node();
+      head->data = k;
+
+        node *curr = head;
+  while(curr != NULL)
+  {
+    cout << curr->data << " ";
+    curr = curr->next;
+  }
+  cout << "\n--------\n";
+
+
+      return head;
+  }
+  else
+  {
+      head->next = new node();
+      head->next->data = k;
+      head->next->prev = head;
+
+        node *curr = head;
+  while(curr != NULL)
+  {
+    cout << curr->data << " ";
+    curr = curr->next;
+  }
+  cout << "\n--------\n";
+
+
+      return head->next;
+  }
+
+}
+
+void pop(node *head, node *target)
+{
+  if(head == target)
+  {
+    if(head->next == NULL)
+    {
+      head = NULL;
+      return;
+    }
+    head = head->next;
+    head->prev = NULL;
+  }
+  else
+  {
+    if(target->next == NULL)
+    {
+      target->prev->next = NULL;
+      return;
+    }
+    target->prev->next  = target->next;
+    target->next->prev = target->prev;
+  }
+}
 
 int main()
 {
@@ -42,66 +104,27 @@ int main()
       int n = 0;
       cin >> n;
 
-      cin >> k;
-      node *start = new node();
-      node *curr = start;
-      curr->data = k;
-      curr->prev = NULL;
+      vector<pair<int, node*>> v(26,{0, NULL});
+      node *root = NULL;
 
-      for(int i = 0; i < n - 1; i++)
+      for(int i = 0; i < n; i++)
       {
-        cin >> k;
-        curr->next = new node();
-        curr->next->data = k;
-        curr->next->next = NULL;
-        curr->next->prev  = curr;
-        curr = curr->next;
-      }
+        char c;
+        cin >> c;
+        if(v[c - 'A'].first == 0)
+        {
+          v[c - 'A'].first++;
+          v[c - 'A'].second = push(root, c);
+          if(root == NULL) root = v[c - 'A'].second;
+        }
+        else
+        {
+          pop(root, v[c - 'A'].second);
+          v[c - 'A'].second = NULL;
+        } 
 
-      node *end = curr;
-
-      curr = start;
-      while(curr != NULL)
-      {
-        cout << curr->data << " ";
-        curr = curr->next;
-      }
+      }  
       cout << "\n";
-
-      curr = end;
-      while(curr != NULL)
-      {
-        cout << curr->data << " ";
-        curr = curr->prev;
-      }
-      cout << "\n";
-
-      cin >> k;
-      int count = 0;
-
-      curr = start;
-      while(count != k)
-      {
-        count++;
-        node *temp = curr->next;
-        curr->next = NULL;
-        curr->prev = end;
-        end->next = curr;
-        end = end->next;
-        curr = temp;
-      }
-
-      start = curr;
-      start->prev = NULL;
-
-      curr = end;
-      while(curr != NULL)
-      {
-        cout << curr->data << " ";
-        curr = curr->prev;
-      }
-      cout << "\n";
-      
     }
 
    #ifndef ONLINE_JUDGE
