@@ -1,2 +1,2 @@
-6
-a b c b c d
+8
+v b c b e f a v

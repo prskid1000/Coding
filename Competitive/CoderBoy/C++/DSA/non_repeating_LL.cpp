@@ -17,6 +17,32 @@
 using namespace std;
 using namespace std::chrono; 
 
+struct node
+{
+  char data = 0;
+  node *prev = NULL, *next = NULL; 
+};
+
+node* push(node *head, char k)
+{
+  while(head->next != NULL)
+      head = head->next;
+      head->next = new node();
+      head->next->data = k;
+      head->next->prev = head;
+      return head->next;
+}
+
+void pop(node *head, node *target)
+{
+  if(target->next == NULL)
+    {
+      target->prev->next = NULL;
+    }
+    target->prev->next  = target->next;
+    target->next->prev = target->prev;
+}
+
 int main()
 {
    #ifndef ONLINE_JUDGE
@@ -32,7 +58,29 @@ int main()
 
    while( t-- )
     {
-      
+
+      int n = 0;
+      cin >> n;
+
+      vector<pair<int, node*>> v(26,{0, NULL});
+      node *root = new node();
+
+      for(int i = 0; i < n; i++)
+      {
+        char c;
+        cin >> c;
+        if(v[c - 'a'].first == 0)
+        {
+          v[c - 'a'].first++;
+          v[c - 'a'].second = push(root, c);
+        }
+        else
+        {
+          pop(root, v[c - 'a'].second);
+          v[c - 'a'].second = NULL;
+        } 
+        cout << root->next->data << "\n";
+     }  
     }
 
    #ifndef ONLINE_JUDGE
