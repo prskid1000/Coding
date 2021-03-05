@@ -18,102 +18,99 @@ using namespace std;
 using namespace std::chrono; 
 
 struct Node{
-  int l = 0, h = 0;
-  Node *pre = NULL, *suc = NULL;
+  int data;
   Node *left = NULL, *right = NULL;
 };
 
-Node* insert(Node *root = NULL,  int l = 0, int h = 0, Node *pre = NULL, Node *suc = NULL)
+Node* search(Node* root, int val)
+{
+  if(root == NULL || root->data == val)
+       return root;
+    
+  if (root->data < val)
+       return search(root->right, val);
+ 
+  return search(root->left, val);
+}
+
+Node* insert(Node *root, int val)
 {
   if(!root)
   {
     Node *nw = new Node();
-    nw->l = l;
-    nw->h = h;
-    nw->pre = pre;
-    nw->suc = suc;
+    nw->data = val;
     return nw;
   }
-
-  if(root->l > l)
+  else if(val < root->data)
   {
-    suc = root;
-    root->left = insert(root->left, l, h, pre, suc);
+    root->left = insert(root->left, val);
   }
-
   else
   {
-    pre = root;
-    root->right = insert(root->right, l, h, pre, suc);
+    root->right = insert(root->right, val);
   }
-
   return root;
 }
 
-Node* remove(Node *root = NULL,  int l = 0, int h = 0)
+Node* minValueNode(Node* node)
+{
+  Node* current = node;
+
+  while (current && current->left != NULL)
+        current = current->left;
+ 
+  return current;
+}
+
+Node* remove(Node *root, int val)
 {
   if(!root) return NULL;
-
-  if(root->l > l)
+  if(val < root->data)
   {
-    root->left = remove(root->left, l, h);
+    root->left = remove(root->left, val);
   }
-
-  else if(root->l < l)
-  {
-    root->right = remove(root->right, l, h);
-  }
-
   else
   {
-    if(root->left == NULL)
+    root->right = remove(root->right, val);
+  }
+
+  if(val == root->data)
+  {
+    if(root->left == NULL && root->right == NULL)
     {
-      Node *tmp = root->right;
       free(root);
-      return tmp;
+      return NULL;
     }
 
-    if(root->right == NULL)
+    else if(root->left == NULL)
     {
-      Node *tmp = root->left;
+      Node *t = root->right;
       free(root);
-      return tmp;
+      return t;
     }
 
-    Node *tmp = root->suc;
-    root->l = tmp->l;
-    root->h = tmp->h;
-    root->pre = tmp->pre;
-    root->suc = tmp->suc;
-    root->right = remove(root->right, tmp->l, tmp->h);
+    else if(root->right == NULL)
+    {
+      Node *t = root->left;
+      free(root);
+      return t;
+    }
+
+    Node* t = minValueNode(root->right);
+    root->data = t->data;
+    root->right = remove(root->right, t->data);
   }
 
   return root;
 }
 
-Node* search(Node *root = NULL, int l = 0, int h = 0)
+void inorder(Node *root)
 {
-  return root;
-}
-
-void inorder(Node *root = NULL)
-{
-  if(!root) return;
+  if(root == NULL) return;
   inorder(root->left);
-  cout << root->l << " " << root->h << "\n";
+  cout << root->data << " ";
   inorder(root->right);
 }
-
-void preorder(Node *root = NULL)
-{
-  if(!root) return;
-  cout << root->l << " " << root->h << "\n";
-  preorder(root->left);
-  preorder(root->right);
-} 
-
-//Interval Tree
-
 
 int main()
 {
@@ -135,13 +132,9 @@ int main()
       Node *root = NULL;
       for(int i = 0; i < n; i++)
       {
-        cin >> j >> k;
-        root = insert(root, j, k);
+        cin >> k;
+        root = insert(root, k);
       }
-
-      inorder(root);
-      cout << "\n";
-      remove(root, 30, 40);
       inorder(root);
       cout << "\n";
     }
