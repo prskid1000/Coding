@@ -132,6 +132,7 @@ int main()
     {
       ll n = 0;
       cin >> n;
+
       Node *root = NULL;
       for(int i = 0; i < n; i++)
       {
@@ -144,6 +145,7 @@ int main()
       remove(root, 30, 40);
       inorder(root);
       cout << "\n";
+      
     }
 
    #ifndef ONLINE_JUDGE
