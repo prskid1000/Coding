@@ -22,6 +22,30 @@
 using namespace std;
 using namespace std::chrono;
 
+void insert(stack<int> &st, int v)
+{
+  if(st.empty() || st.top() < v)
+  {
+    st.push(v);
+  }
+  else
+  {
+    int tmp = st.top();
+    st.pop();
+    insert(st, v);
+    st.push(tmp);
+  }
+}
+
+void sort(stack<int> &st)
+{
+  if(st.empty()) return;
+  int v = st.top();
+  st.pop();
+  sort(st);
+  insert(st, v);
+}
+
 int main()
 {
    #ifndef ONLINE_JUDGE
@@ -37,7 +61,23 @@ int main()
 
    while( t-- )
     {
-      
+      int n = 0;
+      cin >> n;
+
+      stack<int> st;
+      for(int i = 0; i < n; i++)
+      {
+        cin >> k;
+        st.push(k);
+      }
+
+      sort(st);
+
+      while(!st.empty())
+      {
+        cout << st.top() << "\n";
+        st.pop();
+      }
     }
 
    #ifndef ONLINE_JUDGE
